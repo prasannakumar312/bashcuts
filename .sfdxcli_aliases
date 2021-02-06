@@ -1,0 +1,157 @@
+#SALESFORCE DX CLI ALIASES
+alias dxaliaslist="sfdx force:alias:list"
+alias dxorgopen="sfdx force:org:open"
+dxaliasdelete() {
+    sfdx force:alias:set $1=
+}
+
+#sfdx Salesforce DX Aliases Functions
+lwc-debug() {
+    aliasAssociatedUserName=$(git config sf-va-dev-environment.user-name-value)
+    sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
+}
+
+dxauthprod() {
+    sfdx force:auth:web:login -a $1
+}
+
+dxauthtest() {
+    sfdx force:auth:web:test -a $1
+}
+
+dxscan() {
+    dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
+    echo "$dateAndTime"
+    resultsDirectory=scanresults/datetime_"$dateAndTime"
+    mkdir -p "$resultsDirectory"
+    sfdx scanner:run -o "$resultsDirectory"/scannerresults_"$dateAndTime".csv -f csv -t=$1
+}
+
+dxtest-m () {
+    sfdx force:apex:test:run --resultformat human --loglevel error --tests $1
+}
+
+dxtest-m-cc () {
+    sfdx force:apex:test:run --resultformat human --loglevel error --tests $1 --codecoverage
+}
+
+dxtest-s () {
+    sfdx force:apex:test:run --resultformat human --loglevel error -s $1
+}
+
+dxtest-s-cc () {
+    sfdx force:apex:test:run --resultformat human --loglevel error -s $1 --codecoverage
+}
+
+dxtest-c () {
+    sfdx force:apex:test:run --classnames \"$1\" --loglevel error 
+}
+
+dxtest-c-cc () {
+    sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
+}
+
+dxtest-r () {
+    sfdx force:apex:test:report -i $1
+}
+
+dxcc () {
+    sfdx force:data:soql:query --query  "SELECT NumLinesCovered, NumLinesUncovered, ApexClassOrTrigger.Name FROM ApexCodeCoverage WHERE ApexClassOrTrigger.Name in ('$1')" --usetoolingapi
+}
+
+dxqtflag () {
+    sfUserNameFromGitConfig=$()
+    userId=$(sfdx force:data:soql:query --query "SELECT Id FROM User WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
+    results=$(sfdx force:data:soql:query --query "SELECT debuglevelid FROM TraceFlag WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
+    # sfdx force:data:soql:query --query "SELECT ID FROM TraceFlag LIMIT 10" 
+    # tracedenttiyid is user
+}
+
+dxlogstart () {
+    # yest=$(date --date="today + 23 hours" +"%d/%m/%Y/%h/%mm" +"%Y-%m-%dT%H:%M:%SZ")
+    notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
+    echo "$notQuite24Hours"
+    funcYest="$(dxqtflag)"
+    echo $funcYest
+    sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid $1 --values StartDate='' ExpirationDate='"$notQuite24Hours"' --usetoolingapi --json --loglevel fatal
+    #logtype=DEVELOPER_LOG
+    #2do
+    #create trace flag for all finest
+    # sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
+}
+
+dxquery() {
+    sfdx force:data:soql:query -q "$1" --json
+}
+
+
+# 10:14:45.203 SFDX: Turn On Apex Debug Log for Replay Debugger 
+# Starting SFDX: Turn On Apex Debug Log for Replay Debugger
+
+# 10:14:54.138 sfdx force:data:soql:query --query SELECT id, logtype, startdate, expirationdate, debuglevelid, debuglevel.apexcode, debuglevel.visualforce FROM TraceFlag WHERE logtype='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE' --usetoolingapi --json --loglevel fatal
+# {
+#   "status": 0,
+#   "result": {
+#     "size": 1,
+#     "totalSize": 1,
+#     "done": true,
+#     "queryLocator": null,
+#     "entityTypeName": "TraceFlag",
+#     "records": [
+#       {
+#         "attributes": {
+#           "type": "TraceFlag",
+#           "url": "/services/data/v50.0/tooling/sobjects/TraceFlag/7tfr0000000PFukAAG"
+#         },
+#         "Id": "7tfr0000000PFukAAG",
+#         "LogType": "DEVELOPER_LOG",
+#         "StartDate": null,
+#         "ExpirationDate": "2021-01-22T15:17:58.000+0000",
+#         "DebugLevelId": "7dlt0000000blJTAAY",
+#         "DebugLevel": {
+#           "attributes": {
+#             "type": "DebugLevel",
+#             "url": "/services/data/v50.0/tooling/sobjects/DebugLevel/7dlt0000000blJTAAY"
+#           },
+#           "ApexCode": "FINEST",
+#           "Visualforce": "FINER"
+#         }
+#       }
+#     ]
+#   }
+# }
+# 10:15:00.649 sfdx force:data:soql:query --query SELECT id, logtype, startdate, expirationdate, debuglevelid, debuglevel.apexcode, debuglevel.visualforce FROM TraceFlag WHERE logtype='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE' --usetoolingapi --json --loglevel fatal
+#  ended with exit code 0
+
+# Starting sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
+
+# 10:15:00.683 sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
+# {
+#   "status": 0,
+#   "result": {
+#     "id": "7dlt0000000blJTAAY",
+#     "success": true,
+#     "errors": []
+#   }
+# }
+# 10:15:07.12 sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
+#  ended with exit code 0
+
+# Starting sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
+
+# 10:15:07.46 sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
+# {
+#   "status": 0,
+#   "result": {
+#     "id": "7tfr0000000PFukAAG",
+#     "success": true,
+#     "errors": []
+#   }
+# }
+# 10:15:15.237 sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
+#  ended with exit code 0
+
+# 10:15:15.238 SFDX: Turn On Apex Debug Log for Replay Debugger 
+#  ended with exit code 0
+
+
