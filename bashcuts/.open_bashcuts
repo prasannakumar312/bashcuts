@@ -1,0 +1,3 @@
+#OPEN SNIPPENTS
+alias o-snip-apex="start ~/AppData/Roaming/Code/User/snippets/Apex.code-snippets"
+alias o-snip-lwc="start ~/AppData/Roaming/Code/User/snippets/lwc.code-snippets"

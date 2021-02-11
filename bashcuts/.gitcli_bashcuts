@@ -15,3 +15,16 @@ alias g-reset-commitandfiles="git reset --hard HEAD~1"
 alias g-reset-commit="git reset --soft HEAD^1"
 
 alias gbp="git push origin HEAD"
+
+#git functions
+g-ignore-filereset() {
+    git rm --cached -r $1
+}
+
+#git checkout main and delete current branch
+gb-delete() {
+    currentBranchToDelete=$(git branch --show-current)
+    echo "Locally deleting: $currentBranchToDelete"
+    git checkout main
+    git branch -D $currentBranchToDelete
+}
