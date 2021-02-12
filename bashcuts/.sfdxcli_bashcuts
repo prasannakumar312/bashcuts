@@ -1,6 +1,8 @@
 #SALESFORCE DX CLI ALIASES
 alias dxaliaslist="sfdx force:alias:list"
 alias dxorgopen="sfdx force:org:open"
+alias dxorglist="sfdx force:org:list"
+
 dxaliasdelete() {
     sfdx force:alias:set $1=
 }
@@ -80,10 +82,23 @@ dxlogstart () {
     # sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
 }
 
-dxquery() {
-    sfdx force:data:soql:query -q "$1" --json
+dxq() {
+    sfdx force:data:soql:query -q "$1"
 }
 
+dxq-csv() {
+    dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
+    echo "$dateAndTime"
+    queryResultsDirectory=queryResults
+    mkdir -p "$queryResultsDirectory"
+    fileName="$queryResultsDirectory"/"$dateAndTime".csv
+    results=$(sfdx force:data:soql:query -q "$1" -r csv) 
+    echo "$results" > "$fileName"
+}
+
+dx-getfields() {
+    sfdx shane:object:fields:describe -o $1
+}
 
 # 10:14:45.203 SFDX: Turn On Apex Debug Log for Replay Debugger 
 # Starting SFDX: Turn On Apex Debug Log for Replay Debugger

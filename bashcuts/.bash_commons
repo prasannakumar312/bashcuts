@@ -12,10 +12,6 @@ alias git-bash='/git-bash.exe & > /dev/null 2&>1'
 #RE-INITIALIZE CURRENTLY OPEN TERMINAL
 alias reinit="source ~/.bashrc"
 
-#OPEN ALIAS FILE
-alias open-alias="start ~/.bashrc"
-alias open-bashrc="start ~/.bashrc"
-alias open-bashcommons="start ~/.bash_commons"
 
 #list directory items with file size
 alias lt='ls --human-readable --size -1 -S --classify'

@@ -1,3 +1,12 @@
 #OPEN SNIPPENTS
 alias o-snip-apex="start ~/AppData/Roaming/Code/User/snippets/Apex.code-snippets"
 alias o-snip-lwc="start ~/AppData/Roaming/Code/User/snippets/lwc.code-snippets"
+
+#OPEN ALIAS FILE
+alias o-bcut-bashrc="start ~/.bashrc"
+alias o-bcut-sfdx="start /c/git/jdschleicher/bashcuts/bashcuts/.sfdxcli_bashcuts"
+alias o-bcut-cci="start /c/git/jdschleicher/bashcuts/bashcuts/.ccicli_bashcuts"
+alias o-bcut-git="start /c/git/jdschleicher/bashcuts/bashcuts/.gitcli_bashcuts"
+alias o-bcut-gh="start /c/git/jdschleicher/bashcuts/bashcuts/.ghcli_bashcuts"
+alias o-bcut-common="start /c/git/jdschleicher/bashcuts/bashcuts/.bash_commons"
+alias o-bcut="start /c/git/jdschleicher/bashcuts/bashcuts/.bash_commons"
