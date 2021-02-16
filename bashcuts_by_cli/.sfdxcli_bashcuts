@@ -3,6 +3,12 @@ alias dxaliaslist="sfdx force:alias:list"
 alias dxorgopen="sfdx force:org:open"
 alias dxorglist="sfdx force:org:list"
 
+dxcreate() {
+    #this alias function assumes there is a configured alias connection within the local git config file under 
+    sfdev=$(git config )
+    sfdx force:org:create -s -f config/project-scratch-def.json -a dreamhouse-org
+}
+
 dxaliasdelete() {
     sfdx force:alias:set $1=
 }
