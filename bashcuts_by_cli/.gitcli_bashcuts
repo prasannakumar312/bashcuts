@@ -28,3 +28,21 @@ gb-delete() {
     git checkout main
     git branch -D $currentBranchToDelete
 }
+
+g-action-init() {
+    # replace $1 with a unique feature branch identifier
+    git checkout -b "feature-$1";
+    touch "feature-$1";
+    git add -A;
+    git commit -m "changes-$1";
+    git push -u origin feature-$1;
+}
+
+g-repo-branch-structure() {
+    # git checkout -b "production";
+    # gbp;
+    git checkout -b "staging";
+    gbp;
+    git checkout -b "regression";
+    gbp;
+}

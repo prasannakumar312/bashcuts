@@ -4,11 +4,11 @@ alias o-snip-lwc="start ~/AppData/Roaming/Code/User/snippets/lwc.code-snippets"
 
 #OPEN ALIAS FILE
 alias o-bashrc="start ~/.bashrc"
-alias o-sfdx="start /c/git/bashcuts/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts"
-alias o-cci="start /c/git/bashcuts/bashcuts/bashcuts_by_cli/.ccicli_bashcuts"
-alias o-git="start /c/git/bashcuts/bashcuts/bashcuts_by_cli/.gitcli_bashcuts"
-alias o-gh="start /c/git/bashcuts/bashcuts/bashcuts_by_cli/.ghcli_bashcuts"
-alias o-common="start /c/git/bashcuts/bashcuts/bashcuts_by_cli/.bash_commons"
-alias o-bcut-bashrc="start /c/git/bashcuts/bashcuts/.bashrc"
+alias o-sfdx="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts"
+alias o-cci="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ccicli_bashcuts"
+alias o-git="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.gitcli_bashcuts"
+alias o-gh="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ghcli_bashcuts"
+alias o-common="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.bash_commons"
+alias o-bcut-bashrc="start /c/git/jdschleicher/bashcuts/.bashrc"
 alias o-gcl="git config --local -e" #open up local config file for editing
 alias o-gcg="git config --global -e"

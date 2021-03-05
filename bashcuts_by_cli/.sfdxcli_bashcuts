@@ -3,10 +3,33 @@ alias dxaliaslist="sfdx force:alias:list"
 alias dxorgopen="sfdx force:org:open"
 alias dxorglist="sfdx force:org:list"
 
+dxopen() {
+    sfdx force:org:open $1
+}
+
+dxcreate-default() {
+    #this alias function assumes there is a configured alias connection within the local git config file under 
+    aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
+    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername
+}
+
 dxcreate() {
     #this alias function assumes there is a configured alias connection within the local git config file under 
-    sfdev=$(git config )
-    sfdx force:org:create -s -f config/project-scratch-def.json -a dreamhouse-org
+    aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
+    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername
+}
+
+dxpull() {
+    sfdx force:source:pull -u $1
+}
+
+dxpush() {
+    sfdx force:source:push
+}
+
+
+dxgitconfigalias(){
+    git config sf-va-dev-environment.alias $1
 }
 
 dxaliasdelete() {
@@ -16,6 +39,7 @@ dxaliasdelete() {
 #sfdx Salesforce DX Aliases Functions
 lwc-debug() {
     aliasAssociatedUserName=$(git config sf-va-dev-environment.user-name-value)
+    alias=$(git config sf-va-dev-environment.alias)
     sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
 }
 
