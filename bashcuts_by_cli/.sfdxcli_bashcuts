@@ -2,22 +2,90 @@
 alias dxaliaslist="sfdx force:alias:list"
 alias dxorgopen="sfdx force:org:open"
 alias dxorglist="sfdx force:org:list"
+alias dxdevhubpackagelist="sfdx force:package:list"
+alias dxlocalpackagelist="sfdx force:package:installed:list"
 
 dxopen() {
     sfdx force:org:open $1
 }
 
-dxcreate-default() {
-    #this alias function assumes there is a configured alias connection within the local git config file under 
-    aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
-    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername
+dxset-username() {
+    sfdx config:set --defaultusername $1
 }
 
-dxcreate() {
-    #this alias function assumes there is a configured alias connection within the local git config file under 
-    aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
-    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $1 --durationdays $2 --setdefaultusername
+dxset-D() {
+    sfdx config:set defaultdevhubusername=$1
 }
+
+dxlimits() {
+    sfdx force:limits:api:display -u $1
+}
+
+dxcreate-scratch() {
+    #this alias function assumes there is a configured alias connection within the local git config file under 
+    # aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
+    echo How many days\(--durationdays\) will this scratch org Exist \(7-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+
+}
+
+dxcreate-package() {
+    echo What is the alias/username\(--targetdevhubusername\) for the ORG?
+    read targetdevhubusername
+    echo What is the package Name?\(--name\)?
+    read packageName
+    echo What is the package Type?\(--packagetype\)?
+    read packageType
+    echo What is the package path?\(--path\)?
+    read path
+    echo What is the package description?\(--description\)?
+    read description
+    echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+}
+
+dxcreate-package-version() {
+    echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    read targetdevhubusername
+    echo What is the package alias being versioned?\(--package \| -p\)?
+    read packageNameAlias
+    echo What is the package installation Key?\(--installationkey \| -k\)?
+    read installationKey
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkey $installationKey 
+    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkey $installationKey
+}
+
+dxcreate-data-user() {
+    # Required fields are missing: [Alias, TimeZoneSidKey, LocaleSidKey, EmailEncodingKey, ProfileId, LanguageLocaleKey
+    echo First Name?
+    read firstName
+    echo Last Name?
+    read lastName
+    echo Email?
+    read email
+    username="${email}un"
+    echo sfdx force:data:record:create --sobjecttype User --perflog --json --values=="FirstName='$firstName' \
+         LastName='$lastName' \
+         Alias='$alias' \
+         Email='$email' \
+         Username='$username' \
+         Nickname='$alias' "
+    sfdx force:data:record:create --sobjecttype User --perflog --json --values="FirstName='$firstName' LastName='$lastName' Email='$email' Username='$username'"
+
+}
+
+dx-quickdeploy-permsets-dx() {
+    echo ORG username or alias to deploy to?
+    read targetusername
+    # /c/git/jdschleicher/bashcuts/bashcuts_by_cli/
+    echo sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
+    sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
+}
+
 
 dxpull() {
     sfdx force:source:pull -u $1
@@ -43,13 +111,19 @@ lwc-debug() {
     sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
 }
 
-dxauthprod() {
-    sfdx force:auth:web:login -a $1
+dxauth-custom() {
+    echo What is the custom url\(--instanceurl\)?
+    read customUrl
+    echo What is the alias\(--setalias\) for this custom url authorization?
+    read alias
+    echo sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
+    sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
 }
 
-dxauthtest() {
-    sfdx force:auth:web:test -a $1
+dxauth() {
+    sfdx auth:web:login --setalias $1 
 }
+
 
 dxscan() {
     dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
@@ -60,6 +134,7 @@ dxscan() {
 }
 
 dxtest-m () {
+    # param in format : ClassName.MethodName
     sfdx force:apex:test:run --resultformat human --loglevel error --tests $1
 }
 
@@ -129,6 +204,8 @@ dxq-csv() {
 dx-getfields() {
     sfdx shane:object:fields:describe -o $1
 }
+
+
 
 # 10:14:45.203 SFDX: Turn On Apex Debug Log for Replay Debugger 
 # Starting SFDX: Turn On Apex Debug Log for Replay Debugger
