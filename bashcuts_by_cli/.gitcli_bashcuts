@@ -5,7 +5,7 @@ alias ga="git add"
 alias gaa="git add -A"
 alias gd="git diff"
 alias gc="git commit"
-alias gl="git log --graph --full-history ---all --color --decorate=short"
+alias gl="git log --graph --full-history --all --color --decorate=short"
 alias gcl="git config --local -e" #open up local config file for editing
 alias gcg="git config --global -e"
 
@@ -21,12 +21,30 @@ g-ignore-filereset() {
     git rm --cached -r $1
 }
 
+g-reset-stage() {
+    git reset HEAD $1
+}
+
 #git checkout main and delete current branch
 gb-delete() {
     currentBranchToDelete=$(git branch --show-current)
     echo "Locally deleting: $currentBranchToDelete"
     git checkout main
     git branch -D $currentBranchToDelete
+}
+
+g-quick-commit-push() {
+    git add .;
+    git commit -am "$1";
+    gbp;
+}
+
+show-branches() {
+    git branch
+}
+
+g-delete-all-local-branches-but-master() {
+    git branch | grep -v "master" | xargs git branch -D 
 }
 
 g-action-init() {

@@ -4,13 +4,61 @@ alias dxorgopen="sfdx force:org:open"
 alias dxorglist="sfdx force:org:list"
 alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
+alias dxshow-plugins="sfdx plugins --core"
+alias dxcleanscratch="sfdx force:org:list --clean"
 
 dxopen() {
-    sfdx force:org:open $1
+    sfdx force:org:open -u $1
+}
+
+dxshow-packages() {
+    echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
+    read devhub
+    echo sfdx force:package:list --targetdevhubusername $devhub
+    sfdx force:package:list --targetdevhubusername $devhub
+}
+
+dxpackage-install-noprompt() {
+    echo What is the alias/username of the org deploying to \(--targetusername\)?
+    read alias
+    echo How long to wait \( --wait \)?
+    read wait
+    echo What is the package version id  \( --package \)?
+    read package
+    echo sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
+    sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
+
+}
+
+dxshow-package-versions() {
+    echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
+    read devhub
+    echo sfdx force:package:version:list --targetdevhubusername $devhub
+    sfdx force:package:version:list --targetdevhubusername $devhub
+}
+
+dxplugin-install() {
+    # sfdx plugins:install texei-sfdx-plugin
+    echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
+    read targetdevhubusername
+    echo What is the package Name?\(--name\)?
+    read packageName
+    echo What is the package Type?\(--packagetype\)?
+    read packageType
+    echo What is the package path?\(--path\)?
+    read path
+    echo What is the package description?\(--description\)?
+    read description
+    echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    sfdx force:package:
+}
+
+dxlogout() {
+   sfdx auth:logout --targetusername $1
 }
 
 dxset-username() {
-    sfdx config:set --defaultusername $1
+    sfdx config:set defaultusername=$1
 }
 
 dxset-D() {
@@ -21,16 +69,38 @@ dxlimits() {
     sfdx force:limits:api:display -u $1
 }
 
+dxshow-config() {
+    sfdx config:list
+}
+
+dxdata-load() {
+  echo What path/plan \(p \| --plan \)?
+  read path
+  echo What alias/username \(--targetusername \| -u \) will this data be uploaded to?
+  read alias
+  echo sfdx force:data:tree:import -plan $path --targetusername $alias
+  sfdx force:data:tree:import --plan $path --targetusername $alias
+}
+
 dxcreate-scratch() {
-    #this alias function assumes there is a configured alias connection within the local git config file under 
-    # aliasAssociatedUserName=$(git config sf-va-dev-environment.alias)
-    echo How many days\(--durationdays\) will this scratch org Exist \(7-30\)?
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
     read durationDays
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
-    echo sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
-    sfdx force:org:create --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+    sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+}
 
+dxcreate-project() {
+    # -u, --targetusername=targetusername
+    echo What is the name \(--projectname \|-n \) of the project? 
+    read projectName
+    echo What is the template \(-t \| --template \) of the project? 
+    read template
+    echo sfdx force:project:create --projectname $projectName --template $template
+    sfdx force:project:create --projectname $projectName --template $template
 }
 
 dxcreate-package() {
@@ -86,6 +156,12 @@ dx-quickdeploy-permsets-dx() {
     sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
 }
 
+dx-sandbox-deploy() {
+        echo ORG username or alias to deploy to?
+    read targetusername
+   sfdx force:source:deploy -x path/to/package.xml
+}
+
 
 dxpull() {
     sfdx force:source:pull -u $1
@@ -100,15 +176,19 @@ dxgitconfigalias(){
     git config sf-va-dev-environment.alias $1
 }
 
-dxaliasdelete() {
-    sfdx force:alias:set $1=
+dxauthdelete() {
+    sfdx force:auth:logout -u $1
 }
 
 #sfdx Salesforce DX Aliases Functions
-lwc-debug() {
+lwc-debug-byghconfig() {
     aliasAssociatedUserName=$(git config sf-va-dev-environment.user-name-value)
     alias=$(git config sf-va-dev-environment.alias)
     sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
+}
+
+lwc-debug() {
+    sfdx force:data:record:update --sobjecttype=User --where="Username="$1"" --values="UserPreferencesUserDebugModePref=$2"
 }
 
 dxauth-custom() {
@@ -119,6 +199,35 @@ dxauth-custom() {
     echo sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
     sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
 }
+
+dxauth-device() {
+    echo What is the custom url\(--instanceurl\)?
+    read customUrl
+    echo What is the alias\(--setalias\) for this custom url authorization?
+    read alias
+    # echo sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
+    # sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
+    echo sfdx auth:device:login -r "$customUrl" -a $alias
+    sfdx auth:device:login -r "$customUrl" -a $alias
+
+}
+
+dxauth-jwt() {
+    # sfdx auth:jwt:grant --clientid $SF_FEATURE_CLIENTID -f jwtkeyfile.key --username $SF_FEATURE_USERNAME --instanceurl $SF_FEATURE_ORG_URL -d -s
+    echo What is the instance url\(--instanceurl\)?
+    read instanceUrl 
+    echo What is the client Id\(--clientid\)?
+    read clientId 
+    echo What is the key path\(--jwtkeyfile\)?
+    read jwtkeyFilePath
+    echo What is the username\(--username\)?
+    read username
+    echo What is the alias\(--setalias\)?
+    read alias
+    echo sfdx auth:jwt:grant --clientid $clientId --username $username --setalias $alias --setdefaultdevhubusername --jwtkeyfile $jwtkeyFilePath --instanceurl $instanceUrl
+    sfdx auth:jwt:grant --clientid $clientId --username $username --setalias $alias --setdefaultdevhubusername --jwtkeyfile $jwtkeyFilePath --instanceurl $instanceUrl
+}
+
 
 dxauth() {
     sfdx auth:web:login --setalias $1 
