@@ -26,11 +26,22 @@ g-reset-stage() {
 }
 
 #git checkout main and delete current branch
-gb-delete() {
+g-delete-current() {
+    echo What branch would you like to checkout?
+    read $BRANCH_TO_CHECKOUT
     currentBranchToDelete=$(git branch --show-current)
     echo "Locally deleting: $currentBranchToDelete"
-    git checkout main
+    git checkout $BRANCH_TO_CHECKOUT
     git branch -D $currentBranchToDelete
+}
+
+g-update-remote() {
+    echo What is the new remote?
+    read newRemote
+    git remote rm origin
+    git remote add origin $newRemote
+    git config master.remote origin
+    git config master.merge refs/heads/master
 }
 
 g-quick-commit-push() {
@@ -45,6 +56,22 @@ show-branches() {
 
 g-delete-all-local-branches-but-master() {
     git branch | grep -v "master" | xargs git branch -D 
+}
+
+g-delete-all-remote-branches-but-master-main-develop() {
+    git branch -r | grep 'origin' | grep -v 'master$' | grep -v 'main$' | grep -v 'develop$' | grep -v HEAD | cut -d/ -f2- | while read line; do git push origin :heads/$line; done;    
+}
+
+g-delete-remoteandlocal-by-branch() {
+    echo "What is the branch name?"
+    read branchName
+    echo "deleting branch locally"
+    echo "git branch -D '$branchName'"
+    git branch -D "$branchName"
+    echo "deleting branch from origin"
+    echo "git push -d origin '$branchName'"
+    git push -d origin "$branchName"
+
 }
 
 g-action-init() {

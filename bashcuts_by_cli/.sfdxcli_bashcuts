@@ -1,6 +1,5 @@
 #SALESFORCE DX CLI ALIASES
 alias dxaliaslist="sfdx force:alias:list"
-alias dxorgopen="sfdx force:org:open"
 alias dxorglist="sfdx force:org:list"
 alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
@@ -27,6 +26,30 @@ dxpackage-install-noprompt() {
     read package
     echo sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
     sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
+
+}
+
+dx-retrieve-manifest() {
+
+    echo What is the alias/username of the org deploying to \(-u \| --targetusername\)?
+    read ALIAS
+    echo What is the package.xml directory path \( -x \| --manifest\)?
+    read MANIFEST_PATH
+    echo sfdx force:source:retrieve --manifest $MANIFEST_PATH --targetusername $ALIAS
+    sfdx force:source:retrieve --manifest $MANIFEST_PATH --targetusername $ALIAS
+
+}
+
+dx-retrieve-one() {
+
+    echo What is the alias/username of the org deploying to \(-u \| --targetusername\)?
+    read ALIAS
+    echo What is the metadata type you are retrieving? \( -x \| --manifest\)?
+    read METADATA_TYPE
+    echo What is the API name of the metadata you are retrieving? \( -m \| --metadata\)?
+    read METADATA_API_NAME
+    echo sfdx force:source:retrieve --metadata=\"$METADATA_TYPE:$METADATA_API_NAME\" --targetusername $ALIAS
+    sfdx force:source:retrieve --metadata "$METADATA_TYPE:$METADATA_API_NAME" --targetusername $ALIAS
 
 }
 
@@ -57,12 +80,21 @@ dxlogout() {
    sfdx auth:logout --targetusername $1
 }
 
+dxlogout-all() {
+   sfdx auth:logout --all --noprompt
+}
+
+
 dxset-username() {
     sfdx config:set defaultusername=$1
 }
 
 dxset-D() {
     sfdx config:set defaultdevhubusername=$1
+}
+
+dx-org-verbose() {
+    sfdx force:org:display -u $1 --verbose
 }
 
 dxlimits() {
@@ -82,7 +114,7 @@ dxdata-load() {
   sfdx force:data:tree:import --plan $path --targetusername $alias
 }
 
-dxcreate-scratch() {
+dx-create-scratch() {
     echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
     read devHub
     echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
@@ -93,7 +125,27 @@ dxcreate-scratch() {
     sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
 }
 
-dxcreate-project() {
+dx-convert-mdapi-to-source() {
+    echo What directory will the converted source format be stored \( --outputdir \| -d \)?
+    read OUTPUT_DIR
+    echo What directory contains the mdapi format metadata to convert? \( --rootdir \| -r \)?
+    read SOURCE_DIR
+    echo sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+    sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+}
+
+dx-convert-source-to-mdapi() {
+    echo What directory will the converted mdapi format be stored \( --outputdir \| -d \)?
+    read OUTPUT_DIR
+    echo What directory contains the source format metadata to convert? \( --rootdir \| -r \)?
+    read SOURCE_DIR
+    echo sfdx force:source:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+    sfdx force:source:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+    #   $ sfdx force:source:convert -r path/to/source
+    #   $ sfdx force:source:convert -r path/to/source -d path/to/outputdir -n 'My Package
+}
+
+dx-create-project() {
     # -u, --targetusername=targetusername
     echo What is the name \(--projectname \|-n \) of the project? 
     read projectName
@@ -103,7 +155,7 @@ dxcreate-project() {
     sfdx force:project:create --projectname $projectName --template $template
 }
 
-dxcreate-package() {
+dx-create-package() {
     echo What is the alias/username\(--targetdevhubusername\) for the ORG?
     read targetdevhubusername
     echo What is the package Name?\(--name\)?
@@ -118,18 +170,37 @@ dxcreate-package() {
     sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
 }
 
-dxcreate-package-version() {
+dx-create-package-version-skipvalidation() {
+    # sfdx force:package:version:create -v $DEVHUB_ALIAS --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --skipvalidation --wait 120 --json | tee-object package_version_create_result.json
+
     echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    echo What is the package installation Key?\(--installationkey \| -k\)?
-    read installationKey
-    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkey $installationKey 
-    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkey $installationKey
+    # echo What is the package installation Key?\(--installationkey \| -k\)?
+    # read installationKey
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
+    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
 }
 
-dxcreate-data-user() {
+dx-report-package() {
+    sfdx force:package:version:create:report -i $1 -v $2
+}
+
+dx-create-package-version() {
+    # sfdx force:package:version:create -v $DEVHUB_ALIAS --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --skipvalidation --wait 120 --json | tee-object package_version_create_result.json
+    echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    read targetdevhubusername
+    echo What is the package alias being versioned?\(--package \| -p\)?
+    read packageNameAlias
+    # echo What is the package installation Key?\(--installationkey \| -k\)?
+    # read installationKey
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass 
+    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass
+}
+
+
+dx-create-data-user() {
     # Required fields are missing: [Alias, TimeZoneSidKey, LocaleSidKey, EmailEncodingKey, ProfileId, LanguageLocaleKey
     echo First Name?
     read firstName
@@ -145,30 +216,68 @@ dxcreate-data-user() {
          Username='$username' \
          Nickname='$alias' "
     sfdx force:data:record:create --sobjecttype User --perflog --json --values="FirstName='$firstName' LastName='$lastName' Email='$email' Username='$username'"
+}
 
+dx-assign-permset() {
+    echo What is the alias/username\(-u, targetusername \) for the ORG?
+    read TARGET_USERNAME
+    echo What is the name of the Permission Set to assign for this user? \( -n, --permsetname \)
+    read PERMISSIONSET_NAME
+    echo sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
+    sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
 }
 
 dx-quickdeploy-permsets-dx() {
     echo ORG username or alias to deploy to?
     read targetusername
-    # /c/git/jdschleicher/bashcuts/bashcuts_by_cli/
     echo sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
     sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
 }
 
-dx-sandbox-deploy() {
-        echo ORG username or alias to deploy to?
+dx-sandbox-deploy-manifest() {
+    echo What is the Sandbox ORG username or alias to deploy to?
     read targetusername
-   sfdx force:source:deploy -x path/to/package.xml
+    sfdx force:source:deploy -x path/to/package.xml
 }
 
+dx-sandbox-deploy-checkonly() {
+    echo What is the Sandbox ORG username or alias to deploy to? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo Where is the Source Directory located? \( --sourcepath \| -p \)
+    read SOURCE_DIRECTORY
+    echo sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
+    sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
+}
+
+dx-sandbox-deploy() {
+    echo What is the Sandbox ORG username or alias to deploy to? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo Where is the Source Directory located? \( --sourcepath \| -p \)
+    read SOURCE_DIRECTORY
+    echo sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME
+    sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME 
+}
 
 dxpull() {
     sfdx force:source:pull -u $1
 }
 
 dxpush() {
-    sfdx force:source:push
+    echo What is the username or alias to source push to? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:source:push --targetusername $TARGET_USERNAME
+    sfdx force:source:push --targetusername $TARGET_USERNAME
+}
+
+sfdmu-org2org() {
+    echo What path is the export json instructions file in? \(-p, --path \)
+    read PATH
+    echo What is the username or alias to get data from? \( -s, --sourceusername \)
+    read SOURCE_USERNAME
+    echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
+    read TARGET_USERNAME
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$PATH"
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$PATH"
 }
 
 
@@ -176,8 +285,18 @@ dxgitconfigalias(){
     git config sf-va-dev-environment.alias $1
 }
 
-dxauthdelete() {
-    sfdx force:auth:logout -u $1
+dx-delete-auth() {
+    echo What alias/username for an authentication do you want to delete? \( --targetusername, -u \)
+    read TARGET_USERNAME
+    echo sfdx force:auth:logout -u $TARGET_USERNAME
+    sfdx force:auth:logout -u $TARGET_USERNAME
+}
+
+dx-delete-scratch() {
+    echo What scratch org do you want to delete by alias/username? \( --targetusername, -u \)
+    read TARGET_USERNAME
+    echo sfdx force:org:delete -u $TARGET_USERNAME
+    sfdx force:org:delete -u $TARGET_USERNAME
 }
 
 #sfdx Salesforce DX Aliases Functions
@@ -301,12 +420,44 @@ dxq() {
 }
 
 dxq-csv() {
+    echo What is the username/alias \(--username \| -u\) where this soql will be run against?
+    read alias
+    echo What is the query?
+    read query
     dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
     echo "$dateAndTime"
     queryResultsDirectory=queryResults
     mkdir -p "$queryResultsDirectory"
     fileName="$queryResultsDirectory"/"$dateAndTime".csv
-    results=$(sfdx force:data:soql:query -q "$1" -r csv) 
+    results=$(sfdx force:data:soql:query -q "$query" -r csv -u $alias) 
+    echo "$results" > "$fileName"
+}
+
+dxq-json() {
+    echo What is the username/alias \(--username \| -u\) where this soql will be run against?
+    read alias
+    echo What is the query?
+    read query
+    dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
+    echo "$dateAndTime"
+    queryResultsDirectory=queryResults
+    mkdir -p "$queryResultsDirectory"
+    fileName="$queryResultsDirectory"/"$dateAndTime".json
+    results=$(sfdx force:data:soql:query -q "$query" -r json -u $alias) 
+    echo "$results" > "$fileName"
+}
+
+dxquery-tooling-csv() {
+    echo What is the username/alias \(--username \| -u\) where this soql will be run against?
+    read alias
+    echo What is the query?
+    read query
+    dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
+    echo "$dateAndTime"
+    queryResultsDirectory=queryResults
+    mkdir -p "$queryResultsDirectory"
+    fileName="$queryResultsDirectory"/"$dateAndTime".csv
+    results=$(sfdx force:data:soql:query --usetoolingapi -q "$query" -r csv -u $alias) 
     echo "$results" > "$fileName"
 }
 
