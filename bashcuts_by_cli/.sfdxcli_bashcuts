@@ -42,7 +42,7 @@ dx-retrieve-manifest() {
 
 dx-retrieve-one() {
 
-    echo What is the alias/username of the org deploying to \(-u \| --targetusername\)?
+    echo What is the alias/username of the org retrieving from \(-u \| --targetusername\)?
     read ALIAS
     echo What is the metadata type you are retrieving? \( -x \| --manifest\)?
     read METADATA_TYPE
@@ -53,14 +53,22 @@ dx-retrieve-one() {
 
 }
 
-dxshow-package-versions() {
+dx-show-versions-for-package() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read devhub
-    echo sfdx force:package:version:list --targetdevhubusername $devhub
-    sfdx force:package:version:list --targetdevhubusername $devhub
+    echo What is the package alias\/id? \( --packages, p \)
+    read PACKAGE_ALIAS
+    echo sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
+    sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
 }
 
-dxplugin-install() {
+dx-show-all-package-versions() {
+    echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
+    read devhub
+    echo sfdx force:package:version:list --targetdevhubusername $devhub 
+    sfdx force:package:version:list --targetdevhubusername $devhub 
+}
+dx-plugin-install() {
     # sfdx plugins:install texei-sfdx-plugin
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read targetdevhubusername
