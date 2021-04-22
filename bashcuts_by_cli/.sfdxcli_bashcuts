@@ -277,7 +277,10 @@ dx-sandbox-deploy() {
 }
 
 dxpull() {
-    sfdx force:source:pull -u $1
+    echo What is the username or alias to source push to? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:source:pull --targetusername $TARGET_USERNAME
+    sfdx force:source:pull --targetusername $TARGET_USERNAME
 }
 
 dxpush() {
@@ -288,6 +291,15 @@ dxpush() {
 }
 
 sfdmu-org2org() {
+    echo What is the username or alias to get data from? \( -s, --sourceusername \)
+    read SOURCE_USERNAME
+    echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
+    read TARGET_USERNAME
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME 
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME
+}
+
+sfdmu-org2org-path() {
     echo What path is the export json instructions file in? \(-p, --path \)
     read PATH
     echo What is the username or alias to get data from? \( -s, --sourceusername \)
