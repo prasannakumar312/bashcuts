@@ -17,7 +17,7 @@ dxshow-packages() {
     sfdx force:package:list --targetdevhubusername $devhub
 }
 
-dxpackage-install-noprompt() {
+dx-install-package-noprompt() {
     echo What is the alias/username of the org deploying to \(--targetusername\)?
     read alias
     echo How long to wait \( --wait \)?
@@ -60,6 +60,16 @@ dx-show-versions-for-package() {
     read PACKAGE_ALIAS
     echo sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
     sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
+}
+
+dx-show-package-version-component-viewer() {
+    echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
+    read DEVHUB
+    echo What is the package version to review? 
+    read PACKAGE_VERSION_ID
+    webpage="https://${DEVHUB}.lightning.force.com/packagingSetupUI/ipLanding.app?apvId=${PACKAGE_VERSION_ID}"
+    echo start $webpage
+    start $webpage
 }
 
 dx-show-all-package-versions() {
@@ -197,7 +207,7 @@ dx-report-package() {
 
 dx-create-package-version() {
     # sfdx force:package:version:create -v $DEVHUB_ALIAS --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --skipvalidation --wait 120 --json | tee-object package_version_create_result.json
-    echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    echo What is the DevHub alias/username\(--targetdevhubusername \| -v\) for the ORG?
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
