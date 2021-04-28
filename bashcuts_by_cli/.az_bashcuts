@@ -8,12 +8,55 @@ az-set-default-organization() {
 }
 
 az-create-userstory() {
-    echo What is the title? --title
-    read TITLE  
-    echo What is the project? --project
-    read PROJECT  
-    echo az boards work-item create --type "user story" --title "some other title" --project "project name" --fields "Microsoft.VSTS.Scheduling.StoryPoints=1"
-    az boards work-item create --type "user story" --title "some other title" --project "project name" --fields "Microsoft.VSTS.Scheduling.StoryPoints=1"
+    echo What is the title? 
+    read STORY_TITLE  
+    echo What is the description? 
+    read DESCRIPTION  
+    echo What is the priority? 
+    read -p "1=LOW,2=MEDIUM,3=HIGH: " PRIORITY
+    echo What is the story point amount? 
+    read STORY_POINTS
+    echo What is the Acceptance Criteria?
+    read ACCEPTANCE_CRITERIA
+        DASH="-"
+    FORMATTED_AC="${DASH}${ACCEPTANCE_CRITERIA}"
+    UPDATED_AC=$FORMATTED_AC
+    read -p "More AC (Y/N)?" AC_ANSWER 
+    while [[ ${AC_ANSWER^^} != 'N' ]] 
+        do 
+            read -p "Enter additional AC: " ADDITIONAL_AC 
+            LINEBREAK="<br/><br/>" 
+            
+            UPDATED_AC="${UPDATED_AC} ${LINEBREAK} ${DASH}${ADDITIONAL_AC}" 
+            echo $UPDATED_AC 
+            read -p "More AC (Y/N)? " AC_ANSWER
+        done 
+
+    echo az boards work-item create --title \"$STORY_TITLE\" \
+           --assigned-to \"$AZ_ASSIGNED_TO\" \
+           --project \"$AZ_PROJECT\" \
+           --area \"$AZ_AREA\" \
+           --iteration \"$AZ_ITERATION\" \
+           --fields \
+            \"Microsoft.VSTS.Scheduling.StoryPoints=$STORY_POINTS\" \
+            \"Microsoft.VSTS.Common.Priority=$PRIORITY\" \
+            \"Microsoft.VSTS.Common.AcceptanceCriteria=$ACCEPTANCE_CRITERIA\"  \
+            --type \"user story\"  \
+            --description \"$DESCRIPTION\"
+
+    az boards work-item create --title "$STORY_TITLE" \
+           --assigned-to "$AZ_ASSIGNED_TO" \
+           --project "$AZ_PROJECT" \
+           --area "$AZ_AREA" \
+           --iteration "$AZ_ITERATION" \
+           --fields \
+            "Microsoft.VSTS.Scheduling.StoryPoints=$STORY_POINTS" \
+            "Microsoft.VSTS.Common.Priority=$PRIORITY" \
+            "Microsoft.VSTS.Common.AcceptanceCriteria=$ACCEPTANCE_CRITERIA"  \
+            --type "user story"  \
+            --description "$DESCRIPTION" \
+            --open
+
 }
 
 az-open-work-item() {
