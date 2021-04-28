@@ -2,10 +2,12 @@
 alias o-snip-apex="start ~/AppData/Roaming/Code/User/snippets/Apex.code-snippets"
 alias o-snip-lwc="start ~/AppData/Roaming/Code/User/snippets/lwc.code-snippets"
 alias o-snip-powershell="start ~/AppData/Roaming/Code/User/snippets/powershell.code-snippets"
+alias o-snip-az="start ~/AppData/Roaming/Code/User/snippets/azure-cli.code-snippets"
 
 #OPEN ALIAS FILE
 alias o-bashrc="start ~/.bashrc"
 alias o-sfdx="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts"
+alias o-az="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.az_bashcuts"
 alias o-cci="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ccicli_bashcuts"
 alias o-git="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.gitcli_bashcuts"
 alias o-gh="start /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ghcli_bashcuts"

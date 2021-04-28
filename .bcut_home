@@ -45,6 +45,14 @@ else
 fi
 
 
+if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.az_bashcuts ]; 
+then 
+    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.az_bashcuts; 
+else
+    echo "missing az_bashcuts"
+fi
+
+
 
 
 

@@ -1,0 +1,41 @@
+
+# AZURE DEVOPS CLI
+az-set-default-organization() {
+    echo What url represents the organization to default?
+    read DEFAULT_ORG_URL
+    echo az devops configure -d organization=$DEFAULT_ORG_URL
+    az devops configure -d organization=$DEFAULT_ORG_URL
+}
+
+az-create-userstory() {
+    echo What is the title? --title
+    read TITLE  
+    echo What is the project? --project
+    read PROJECT  
+    echo az boards work-item create --type "user story" --title "some other title" --project "project name" --fields "Microsoft.VSTS.Scheduling.StoryPoints=1"
+    az boards work-item create --type "user story" --title "some other title" --project "project name" --fields "Microsoft.VSTS.Scheduling.StoryPoints=1"
+}
+
+az-open-work-item() {
+    echo What is the ID of the work item? \(--id\)
+    read WORK_ITEM_ID
+    echo az boards work-item show --id $WORK_ITEM_ID --open
+    az boards work-item show --id $WORK_ITEM_ID --open
+}
+
+az-get-work-item() {
+    echo What is the ID of the work item? \(--id\)
+    read WORK_ITEM_ID
+    echo az boards work-item show --id $WORK_ITEM_ID 
+    az boards work-item show --id $WORK_ITEM_ID 
+}
+
+az-quick-get() {
+    echo az boards work-item show --id $1
+    az boards work-item show --id $1
+}
+
+az-quick-open() {
+    echo az boards work-item show --id $1 --open
+    az boards work-item show --id $1 --open
+}

@@ -18,15 +18,32 @@ dxshow-packages() {
 }
 
 dx-install-package-noprompt() {
-    echo What is the alias/username of the org deploying to \(--targetusername\)?
-    read alias
-    echo How long to wait \( --wait \)?
-    read wait
-    echo What is the package version id  \( --package \)?
-    read package
-    echo sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
-    sfdx force:package:install --targetusername $alias --wait $wait --package $package --noprompt
+    echo What is the alias/username of the org deploying to \(--targetusername, -u\)?
+    read TARGET_ALIAS
+    echo What is the Subscriber Package Version Id \( --package, -p \)?
+    read PACKAGE_VERSION_ID
+    echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
+    sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
+}
 
+dx-install-package-production() {
+    echo What is the alias/username of the org deploying to \(--targetusername, -u\)?
+    read TARGET_ALIAS
+    echo What is the Subscriber Package Version Id \( --package, -p \)?
+    read PACKAGE_VERSION_ID
+    echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
+    sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
+
+}
+
+dx-promote-package() {
+    # sfdx force:package:version:promote
+    echo What is the alias/username of the DevHub \(--targetdevhubusername, -v \)?
+    read DEVHUB_ALIAS
+    echo What is the alias of the package to promote \( --package, -p \)
+    read PACKAGE_ALIAS
+    sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_ALIAS --noprompt
+    sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_ALIAS --noprompt
 }
 
 dx-retrieve-manifest() {
@@ -92,6 +109,16 @@ dx-plugin-install() {
     read description
     echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
     sfdx force:package:
+}
+
+dx-texei-dependencies() {
+    echo What is the alias/username of the DevHub \(--targetdevhubusername, -v\)?
+    read DEVHUB_ALIAS
+    echo What is the alias/username of the scratch org \(--targetusername, -u \)?
+    read SCRATCH_ORG_ALIAS
+    echo sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
+    sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
+
 }
 
 dxlogout() {
@@ -189,32 +216,30 @@ dx-create-package() {
 }
 
 dx-create-package-version-skipvalidation() {
-    # sfdx force:package:version:create -v $DEVHUB_ALIAS --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --skipvalidation --wait 120 --json | tee-object package_version_create_result.json
-
     echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    # echo What is the package installation Key?\(--installationkey \| -k\)?
-    # read installationKey
     echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
     sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
 }
 
-dx-report-package() {
-    sfdx force:package:version:create:report -i $1 -v $2
+dx-report-package-version() {
+    echo What is the package version creation report Id? \( -i, --packagecreaterequestid \)
+    read PACKAGE_VERSION_ID
+    echo What is the DevHub username/alias? \( -v, --targetdevhubusername \)
+    read DEVHUB_ALIAS
+    echo sfdx force:package:version:create:report -i $PACKAGE_VERSION_ID -v $DEVHUB_ALIAS
+    sfdx force:package:version:create:report -i $PACKAGE_VERSION_ID -v $DEVHUB_ALIAS
 }
 
-dx-create-package-version() {
-    # sfdx force:package:version:create -v $DEVHUB_ALIAS --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --skipvalidation --wait 120 --json | tee-object package_version_create_result.json
+dx-create-package-version-validate() {
     echo What is the DevHub alias/username\(--targetdevhubusername \| -v\) for the ORG?
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    # echo What is the package installation Key?\(--installationkey \| -k\)?
-    # read installationKey
-    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass 
-    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
+    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
 }
 
 
@@ -252,14 +277,14 @@ dx-quickdeploy-permsets-dx() {
     sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
 }
 
-dx-sandbox-deploy-manifest() {
-    echo What is the Sandbox ORG username or alias to deploy to?
+dx-deploy-manifest() {
+    echo What is the ORG username or alias to deploy to?
     read targetusername
     sfdx force:source:deploy -x path/to/package.xml
 }
 
-dx-sandbox-deploy-checkonly() {
-    echo What is the Sandbox ORG username or alias to deploy to? \( --targetusername \| -u \)
+dx-deploy-checkonly() {
+    echo What is the ORG username or alias to deploy to? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo Where is the Source Directory located? \( --sourcepath \| -p \)
     read SOURCE_DIRECTORY
@@ -267,8 +292,8 @@ dx-sandbox-deploy-checkonly() {
     sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
 }
 
-dx-sandbox-deploy() {
-    echo What is the Sandbox ORG username or alias to deploy to? \( --targetusername \| -u \)
+dx-deploy() {
+    echo What is the ORG username or alias to deploy to? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo Where is the Source Directory located? \( --sourcepath \| -p \)
     read SOURCE_DIRECTORY
@@ -276,8 +301,26 @@ dx-sandbox-deploy() {
     sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME 
 }
 
+dx-deploy-path() {
+    echo What is the ORG username or alias to deploy to? \( --targetusername, -u \)
+    read TARGET_USERNAME
+    echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
+    read SOURCEPATH
+    echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
+    sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
+}
+
+dx-validate-deploy-path() {
+    echo What is the ORG username or alias to deploy to? \( --targetusername, -u \)
+    read TARGET_USERNAME
+    echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
+    read -e SOURCEPATH
+    echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
+    sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
+}
+
 dxpull() {
-    echo What is the username or alias to source push to? \( --targetusername \| -u \)
+    echo What is the username or alias to source pull from? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:pull --targetusername $TARGET_USERNAME
     sfdx force:source:pull --targetusername $TARGET_USERNAME
@@ -295,19 +338,54 @@ sfdmu-org2org() {
     read SOURCE_USERNAME
     echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
     read TARGET_USERNAME
-    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME 
-    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --noprompt
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --noprompt
 }
+
+sfdmu-csvfile2org() {
+    echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
+    read TARGET_USERNAME
+    echo sfdx sfdmu:run --sourceusername csvfile --targetusername $TARGET_USERNAME --noprompt
+    sfdx sfdmu:run --sourceusername csvfile --targetusername $TARGET_USERNAME --noprompt
+}
+
+sfdmu-csvfile2Org-path() {
+    echo What path are the csvfile files in? \(-p, --path \)
+    read -e SOURCEPATH
+    echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
+    read TARGET_USERNAME
+    echo sfdx sfdmu:run --sourceusername csvfile --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
+    sfdx sfdmu:run --sourceusername csvfile --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
+}
+
+sfdmu-csvfileFromOrg-path() {
+    echo What path is the export json instructions file in? \(-p, --path \)
+    read -e SOURCEPATH
+    echo What is the username or alias to get csv data from? \( -s, --sourceusername \)
+    read SOURCE_USERNAME
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername csvfile --path "$SOURCEPATH" --noprompt 
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername csvfile --path "$SOURCEPATH" --noprompt
+}
+
+sfdmu-csvfileFromOrg() {
+    echo What path is the export json instructions file in? \(-p, --path \)
+    read -e SOURCEPATH
+    echo What is the username or alias to get csv data from? \( -s, --sourceusername \)
+    read SOURCE_USERNAME
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername csvfile --noprompt 
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername csvfile --noprompt
+}
+
 
 sfdmu-org2org-path() {
     echo What path is the export json instructions file in? \(-p, --path \)
-    read PATH
+    read -e SOURCEPATH
     echo What is the username or alias to get data from? \( -s, --sourceusername \)
     read SOURCE_USERNAME
     echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
     read TARGET_USERNAME
-    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$PATH"
-    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$PATH"
+    echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
+    sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
 }
 
 
@@ -416,8 +494,10 @@ dxtest-c-cc () {
     sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
 }
 
-dxtest-r () {
-    sfdx force:apex:test:report -i $1
+dx-report-test () {
+    echo What is the test run Id \( -i \)?
+    read TEST_RUN_ID
+    sfdx force:apex:test:report -i $TEST_RUN_ID
 }
 
 dxcc () {
