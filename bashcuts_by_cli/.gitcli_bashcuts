@@ -7,7 +7,7 @@ alias gd="git diff"
 alias gc="git commit"
 
 alias gl-graph="git log --graph --full-history --all --color --decorate=short"
-alias gl-liner="git log --pretty=format:\"%h - %an, %ar : %s\""
+alias gl="git log --pretty=format:\"%h - %an, %ar : %s\""
 alias gcl="git config --local -e" #open up local config file for editing
 alias gcg="git config --global -e"
 
