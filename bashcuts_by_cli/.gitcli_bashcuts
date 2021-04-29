@@ -91,3 +91,7 @@ g-repo-branch-structure() {
     git checkout -b "regression";
     gbp;
 }
+
+gcm() {
+    git commit -am ${1}
+}

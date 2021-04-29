@@ -3,14 +3,14 @@ alias dxaliaslist="sfdx force:alias:list"
 alias dxorglist="sfdx force:org:list"
 alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
-alias dxshow-plugins="sfdx plugins --core"
+alias dx-show-plugins="sfdx plugins --core"
 alias dxcleanscratch="sfdx force:org:list --clean"
 
 dxopen() {
     sfdx force:org:open -u $1
 }
 
-dxshow-packages() {
+dx-show-packages() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read devhub
     echo sfdx force:package:list --targetdevhubusername $devhub
@@ -146,7 +146,7 @@ dxlimits() {
     sfdx force:limits:api:display -u $1
 }
 
-dxshow-config() {
+dx-show-config() {
     sfdx config:list
 }
 
