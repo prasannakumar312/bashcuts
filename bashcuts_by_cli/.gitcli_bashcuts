@@ -20,7 +20,7 @@ alias gbp="git push origin HEAD"
 
 #git functions
 gcm() {
-    git commit -am ${1}
+    git commit -am "$1"
 }
 
 
