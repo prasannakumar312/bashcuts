@@ -342,7 +342,7 @@ sfdmu-org2org() {
     sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --noprompt
 }
 
-sfdmu-csvfile2Org() {
+sfdmu-csvfile2org() {
     echo What is the username or alias to move the exported data to? \( -u, --targetusername \)
     read TARGET_USERNAME
     echo sfdx sfdmu:run --sourceusername csvfile --targetusername $TARGET_USERNAME --noprompt
