@@ -6,7 +6,7 @@ alias dxlocalpackagelist="sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
 alias dxcleanscratch="sfdx force:org:list --clean"
 
-dxopen() {
+dx-open() {
     sfdx force:org:open -u $1
 }
 
@@ -34,6 +34,10 @@ dx-install-package-production() {
     echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
     sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
 
+}
+
+dx-apex() {
+    sfdx force:apex:execute -u $1
 }
 
 dx-promote-package() {
@@ -194,10 +198,11 @@ dx-create-project() {
     # -u, --targetusername=targetusername
     echo What is the name \(--projectname \|-n \) of the project? 
     read projectName
-    echo What is the template \(-t \| --template \) of the project? 
+    echo What is the template \(-t \| --template \) of the project? \( can be standard, empty, analytics \)
     read template
     echo sfdx force:project:create --projectname $projectName --template $template
     sfdx force:project:create --projectname $projectName --template $template
+    
 }
 
 dx-create-package() {
@@ -305,7 +310,7 @@ dx-deploy-path() {
     echo What is the ORG username or alias to deploy to? \( --targetusername, -u \)
     read TARGET_USERNAME
     echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
-    read SOURCEPATH
+    read -e SOURCEPATH
     echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
     sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
 }
@@ -319,14 +324,14 @@ dx-validate-deploy-path() {
     sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
 }
 
-dxpull() {
+dx-pull() {
     echo What is the username or alias to source pull from? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:pull --targetusername $TARGET_USERNAME
     sfdx force:source:pull --targetusername $TARGET_USERNAME
 }
 
-dxpush() {
+dx-push() {
     echo What is the username or alias to source push to? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:push --targetusername $TARGET_USERNAME
@@ -418,7 +423,7 @@ lwc-debug() {
     sfdx force:data:record:update --sobjecttype=User --where="Username="$1"" --values="UserPreferencesUserDebugModePref=$2"
 }
 
-dxauth-custom() {
+dx-auth-custom() {
     echo What is the custom url\(--instanceurl\)?
     read customUrl
     echo What is the alias\(--setalias\) for this custom url authorization?
@@ -427,7 +432,7 @@ dxauth-custom() {
     sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
 }
 
-dxauth-device() {
+dx-auth-device() {
     echo What is the custom url\(--instanceurl\)?
     read customUrl
     echo What is the alias\(--setalias\) for this custom url authorization?
@@ -439,7 +444,7 @@ dxauth-device() {
 
 }
 
-dxauth-jwt() {
+dx-auth-jwt() {
     # sfdx auth:jwt:grant --clientid $SF_FEATURE_CLIENTID -f jwtkeyfile.key --username $SF_FEATURE_USERNAME --instanceurl $SF_FEATURE_ORG_URL -d -s
     echo What is the instance url\(--instanceurl\)?
     read instanceUrl 
@@ -455,13 +460,7 @@ dxauth-jwt() {
     sfdx auth:jwt:grant --clientid $clientId --username $username --setalias $alias --setdefaultdevhubusername --jwtkeyfile $jwtkeyFilePath --instanceurl $instanceUrl
 }
 
-
-dxauth() {
-    sfdx auth:web:login --setalias $1 
-}
-
-
-dxscan() {
+dx-code-scan() {
     dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
     echo "$dateAndTime"
     resultsDirectory=scanresults/datetime_"$dateAndTime"
@@ -469,33 +468,39 @@ dxscan() {
     sfdx scanner:run -o "$resultsDirectory"/scannerresults_"$dateAndTime".csv -f csv -t=$1
 }
 
-dxtest-m () {
+dx-test-method () {
     # param in format : ClassName.MethodName
     sfdx force:apex:test:run --resultformat human --loglevel error --tests $1
 }
 
-dxtest-m-cc () {
+dx-test-method-codecoverage () {
     sfdx force:apex:test:run --resultformat human --loglevel error --tests $1 --codecoverage
 }
 
-dxtest-s () {
+dx-test-suite () {
     sfdx force:apex:test:run --resultformat human --loglevel error -s $1
 }
 
-dxtest-s-cc () {
+dx-test-suite-codecoverage () {
     sfdx force:apex:test:run --resultformat human --loglevel error -s $1 --codecoverage
 }
 
-dxtest-c () {
+dx-test-classes () {
     sfdx force:apex:test:run --classnames \"$1\" --loglevel error 
 }
 
-dxtest-c-cc () {
+dx-test-classes-codecoverage () {
     sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
 }
 
-dx-test-path() {
-    sfdx force:apex:test:run -l RunLocalTests -d <path to outputdir> -u me@my.org
+dx-test-path-json() {
+    echo What is the Org username or alias to run the tests against? \( -u, --targetusername \)
+    read TARGET_ALIAS
+    echo What is the directory path where the tests are located? \( -d, --directory \)
+    read -e DIRECTORY_PATH
+    echo sfdx force:apex:test:run -l RunLocalTests -d -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
+    sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
+
 }
 
 dx-report-test () {
@@ -527,6 +532,8 @@ dxlogstart () {
     #2do
     #create trace flag for all finest
     # sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
+# 005t0000001kkZ1AAI
+# sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 005t0000001kkZ1AAI --values "ApexCode=FINEST Visualforce=FINER" --usetoolingapi --json --loglevel fatal
 }
 
 dxq() {
