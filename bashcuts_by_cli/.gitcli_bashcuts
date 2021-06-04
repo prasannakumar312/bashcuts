@@ -33,9 +33,11 @@ g-reset-stage() {
 #git checkout main and delete current branch
 g-delete-current() {
     echo What branch would you like to checkout?
-    read $BRANCH_TO_CHECKOUT
-    currentBranchToDelete=$(git branch --show-current)
+    read BRANCH_TO_CHECKOUT
+    echo $BRANCH_TO_CHECKOUT
+    $currentBranchToDelete=$(git branch --show-current)
     echo "Locally deleting: $currentBranchToDelete"
+    echo "git checkout $BRANCH_TO_CHECKOUT"
     git checkout $BRANCH_TO_CHECKOUT
     git branch -D $currentBranchToDelete
 }

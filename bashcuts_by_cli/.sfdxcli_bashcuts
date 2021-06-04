@@ -146,7 +146,7 @@ dx-org-verbose() {
     sfdx force:org:display -u $1 --verbose
 }
 
-dxlimits() {
+dx-limits() {
     sfdx force:limits:api:display -u $1
 }
 
