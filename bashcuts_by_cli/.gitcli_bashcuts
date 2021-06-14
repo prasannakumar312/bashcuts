@@ -22,6 +22,12 @@ gc() {
     git commit -am "${1}"
 }
 
+g-rename-current-branch() {
+    echo "What is the new name of the branch?"
+    read NEW_BRANCH_NAME
+    git branch -m $NEW_BRANCH_NAME
+}
+
 g-ignore-filereset() {
     git rm --cached -r $1
 }
@@ -35,10 +41,11 @@ g-delete-current() {
     echo What branch would you like to checkout?
     read BRANCH_TO_CHECKOUT
     echo $BRANCH_TO_CHECKOUT
-    $currentBranchToDelete=$(git branch --show-current)
-    echo "Locally deleting: $currentBranchToDelete"
+    currentBranchToDelete=$(git branch --show-current)
+    echo "current branch: $currentBranchToDelete"
     echo "git checkout $BRANCH_TO_CHECKOUT"
     git checkout $BRANCH_TO_CHECKOUT
+    echo "Locally deleting: $currentBranchToDelete"
     git branch -D $currentBranchToDelete
 }
 
