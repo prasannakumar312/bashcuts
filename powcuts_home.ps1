@@ -1,4 +1,4 @@
-  Write-Host "arri"
+  Write-Host "powershell starting"
 
 $pow_sfdxcli = Get-Content 'C:\git\jdschleicher\bashcuts\powcuts_by_cli\sfdx_cli.ps1'
 if ($pow_sfdxcli -ne $NULL) {

@@ -16,10 +16,11 @@ alias g-reset-commitandfiles="git reset --hard HEAD~1"
 alias g-reset-commit="git reset --soft HEAD^1"
 
 alias gbp="git push origin HEAD"
+alias g-clean="git clean -f -d"
 
 #git functions
 gc() {
-    git commit -am "${1}"
+    git commit -m "${1}"
 }
 
 g-rename-current-branch() {
@@ -34,6 +35,26 @@ g-ignore-filereset() {
 
 g-reset-stage() {
     git reset HEAD $1
+}
+
+g-discard-by-file() {
+    echo What file would you like to discard the updates for?
+    read -e FILE_PATH_TO_DISCARD
+    echo git checkout -- $FILE_PATH_TO_DISCARD
+    git checkout -- $FILE_PATH_TO_DISCARD
+}
+
+g-restore-by-file() {
+    echo What file would you like to restore from staged?
+    read -e FILE_PATH_TO_RESTORE
+    echo git restore --staged $FILE_PATH_TO_RESTORE
+    git restore --staged $FILE_PATH_TO_RESTORE
+}
+
+
+g-reset-last-commit-to-staged() {
+    echo "git reset --soft HEAD~1"
+    git reset --soft HEAD~1
 }
 
 #git checkout main and delete current branch

@@ -7,7 +7,16 @@ alias dx-show-plugins="sfdx plugins --core"
 alias dxcleanscratch="sfdx force:org:list --clean"
 
 dx-open() {
-    sfdx force:org:open -u $1
+    echo What is the username or alias of the org to open? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:org:open --targetusername $TARGET_USERNAME
+    sfdx force:org:open --targetusername $TARGET_USERNAME
+}
+
+
+dx-open-default() {
+    echo sfdx force:org:open
+    sfdx force:org:open
 }
 
 dx-show-packages() {
@@ -174,6 +183,26 @@ dx-create-scratch() {
     sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
 }
 
+dx-create-scratch-and-push() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
+    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    echo $command_result
+    if [[ $command_result =~ "Successfully" ]]
+    then
+        echo "PUSHING CODEBASE TO $alias"
+        dx-push-quick $alias
+    else 
+        echo "The scratch org creation failed"
+    fi
+
+}
+
 dx-convert-mdapi-to-source() {
     echo What directory will the converted source format be stored \( --outputdir \| -d \)?
     read OUTPUT_DIR
@@ -338,6 +367,17 @@ dx-push() {
     sfdx force:source:push --targetusername $TARGET_USERNAME
 }
 
+dx-push-default() {
+    echo sfdx force:source:push 
+    sfdx force:source:push
+}
+
+
+dx-push-quick() {
+    echo sfdx force:source:push --targetusername $1
+    sfdx force:source:push --targetusername $1
+}
+
 sfdmu-org2org() {
     echo What is the username or alias to get data from? \( -s, --sourceusername \)
     read SOURCE_USERNAME
@@ -392,6 +432,7 @@ sfdmu-org2org-path() {
     echo sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
     sfdx sfdmu:run --sourceusername $SOURCE_USERNAME --targetusername $TARGET_USERNAME --path "$SOURCEPATH" --noprompt
 }
+
 
 
 dxgitconfigalias(){
@@ -460,12 +501,15 @@ dx-auth-jwt() {
     sfdx auth:jwt:grant --clientid $clientId --username $username --setalias $alias --setdefaultdevhubusername --jwtkeyfile $jwtkeyFilePath --instanceurl $instanceUrl
 }
 
-dx-code-scan() {
+dx-codescan() {
+    echo What is directory path to perform the code scan against? \( -t, --target \)
+    read -e CODESCAN_DIRECTORY_PATH
     dateAndTime=$(date --date="today" +"%Y%m%d_%H%M%SZ")
     echo "$dateAndTime"
     resultsDirectory=scanresults/datetime_"$dateAndTime"
     mkdir -p "$resultsDirectory"
-    sfdx scanner:run -o "$resultsDirectory"/scannerresults_"$dateAndTime".csv -f csv -t=$1
+    echo "sfdx scanner:run -o "$resultsDirectory"/scannerresults_"$dateAndTime".csv -f csv -t=$CODESCAN_DIRECTORY_PATH"
+    sfdx scanner:run -o "$resultsDirectory"/scannerresults_"$dateAndTime".csv -f csv -t=$CODESCAN_DIRECTORY_PATH
 }
 
 dx-test-method () {
@@ -498,7 +542,7 @@ dx-test-path-json() {
     read TARGET_ALIAS
     echo What is the directory path where the tests are located? \( -d, --directory \)
     read -e DIRECTORY_PATH
-    echo sfdx force:apex:test:run -l RunLocalTests -d -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
+    echo sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
     sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
 
 }
@@ -582,8 +626,11 @@ dxquery-tooling-csv() {
     echo "$results" > "$fileName"
 }
 
-dx-getfields() {
-    sfdx shane:object:fields:describe -o $1
+dx-getfields-by-object() {
+    echo What is the API Name of the object to get fields for?
+    read API_OBJECT_NAME
+    echo sfdx shane:object:fields:describe -o $API_OBJECT_NAME
+    sfdx shane:object:fields:describe -o $API_OBJECT_NAME
 }
 
 

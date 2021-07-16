@@ -3,7 +3,7 @@
 
 function open-profile {
 	code $profile
-}
+} 	
 Set-Alias -Name o-profile -Value open-profile
 
 
