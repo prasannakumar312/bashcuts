@@ -18,7 +18,7 @@ az-create-userstory() {
     read STORY_POINTS
     echo What is the Acceptance Criteria?
     read ACCEPTANCE_CRITERIA
-        DASH="-"
+    DASH="-"
     FORMATTED_AC="${DASH}${ACCEPTANCE_CRITERIA}"
     UPDATED_AC=$FORMATTED_AC
     read -p "More AC (Y/N)?" AC_ANSWER 
@@ -73,12 +73,28 @@ az-get-work-item() {
     az boards work-item show --id $WORK_ITEM_ID 
 }
 
-az-quick-get() {
+az-quick-wi-get() {
     echo az boards work-item show --id $1
     az boards work-item show --id $1
 }
 
-az-quick-open() {
+az-quick-wi-open() {
     echo az boards work-item show --id $1 --open
     az boards work-item show --id $1 --open
+}
+
+az-open-board() {
+    start $AZ_BOARD_VIEW
+}
+
+az-open-hierarchy() {
+    start $AZ_HIERARCHY_VIEW
+}
+
+az-open-current-sprint() {
+    start $AZ_CURRENT_SPRINT_VIEW
+}
+
+az-open-current-sprint-stories-view() {
+    start $AZ_CURRENT_SPRINT_STORIES_VIEW
 }

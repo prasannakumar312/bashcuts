@@ -32,3 +32,9 @@ mcd () {
 }
 
 alias back="cd -"
+
+alias copy="clip.exe"
+
+open-url() {
+   start $1
+}

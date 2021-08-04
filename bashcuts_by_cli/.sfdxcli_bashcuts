@@ -235,14 +235,14 @@ dx-create-project() {
 }
 
 dx-create-package() {
-    echo What is the alias/username\(--targetdevhubusername\) for the ORG?
+    echo What is the DevHub alias/username\(--targetdevhubusername\) for the ORG?
     read targetdevhubusername
     echo What is the package Name?\(--name\)?
     read packageName
-    echo What is the package Type?\(--packagetype\)?
+    echo What is the package Type?\(--packagetype Managed\|Unlocked\)?
     read packageType
     echo What is the package path?\(--path\)?
-    read path
+    read -e path
     echo What is the package description?\(--description\)?
     read description
     echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
@@ -490,9 +490,11 @@ dx-auth-jwt() {
     echo What is the instance url\(--instanceurl\)?
     read instanceUrl 
     echo What is the client Id\(--clientid\)?
+    echo \(This is the Consumer Key of the Connected App\)
     read clientId 
     echo What is the key path\(--jwtkeyfile\)?
-    read jwtkeyFilePath
+    echo \(The local jwt file that aligns with the digital signature in the Connected App\)
+    read -e jwtkeyFilePath
     echo What is the username\(--username\)?
     read username
     echo What is the alias\(--setalias\)?
@@ -513,8 +515,11 @@ dx-codescan() {
 }
 
 dx-test-method () {
-    # param in format : ClassName.MethodName
-    sfdx force:apex:test:run --resultformat human --loglevel error --tests $1
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "Enter test parameter.. in format: ClassName.MethodName"
+    read TEST_PARAM
+    sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --targetusername $ORG_ALIAS_OR_USERNAME
 }
 
 dx-test-method-codecoverage () {
