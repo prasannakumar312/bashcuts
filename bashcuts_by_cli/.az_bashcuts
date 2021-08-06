@@ -91,10 +91,6 @@ az-open-hierarchy() {
     start $AZ_HIERARCHY_VIEW
 }
 
-az-open-current-sprint() {
-    start $AZ_CURRENT_SPRINT_VIEW
-}
-
 az-open-current-sprint-stories-view() {
     start $AZ_CURRENT_SPRINT_STORIES_VIEW
 }

@@ -13,6 +13,17 @@ dx-open() {
     sfdx force:org:open --targetusername $TARGET_USERNAME
 }
 
+dx-docs-all() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
+}
+
+dx-docs-force() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force.htm
+}
+
+dx-docs-config() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_config.htm
+}
 
 dx-open-default() {
     echo sfdx force:org:open
