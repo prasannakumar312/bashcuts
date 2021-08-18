@@ -1,6 +1,11 @@
 #SALESFORCE DX CLI ALIASES
 alias dxaliaslist="sfdx force:alias:list"
-alias dxorglist="sfdx force:org:list"
+
+dx-show-orgs() {
+    echo sfdx force:org:list
+    sfdx force:org:list
+}
+
 alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
@@ -163,6 +168,7 @@ dxset-D() {
 }
 
 dx-org-verbose() {
+    echo sfdx force:org:display -u $1 --verbose
     sfdx force:org:display -u $1 --verbose
 }
 
@@ -213,6 +219,30 @@ dx-create-scratch-and-push() {
     fi
 
 }
+
+dx-create-scratch-dependencies-install-package() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
+    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    echo $command_result
+    if [[ $command_result =~ "Successfully" ]]
+    then
+        echo "INSTALLING  DEPENDENCIES FROM sfdx-project.json TO $alias"
+        echo sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120
+        dependencies_command_result=$(sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120)
+        echo $dependencies_command_result
+
+    else 
+        echo "The scratch org creation failed"
+    fi
+
+}
+
 
 dx-convert-mdapi-to-source() {
     echo What directory will the converted source format be stored \( --outputdir \| -d \)?

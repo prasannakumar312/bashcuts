@@ -1,10 +1,62 @@
 
 # AZURE DEVOPS CLI
+az-show-my-features() {
+    az boards query --output table --wiql "select [id],[Work Item Type],[Title] from workitems where [system.assignedto] = '$AZ_USER_EMAIL' and [Work Item Type] = 'Feature'"
+}
+
+az-show-my-tasks() {
+    az boards query --output table --wiql "select [id],[Work Item Type],[Title] from workitems where [system.assignedto] = '$AZ_USER_EMAIL' and [Work Item Type] = 'Task'"
+}
+
 az-set-default-organization() {
     echo What url represents the organization to default?
     read DEFAULT_ORG_URL
     echo az devops configure -d organization=$DEFAULT_ORG_URL
     az devops configure -d organization=$DEFAULT_ORG_URL
+}
+
+az-create-child-tasks () {
+    echo What is the parent User Story ID to add tasks to?
+    read PARENT_ID
+    echo What are the Task IDs to add to the User Story? \(comma seprated list\)
+    read TASK_IDS
+
+    az boards work-item relation add --id "$PARENT_ID" \
+        --relation-type "child" \
+        --target-id "$TASK_IDS"
+
+}
+
+az-create-template-current-sprint-dx-support() {
+    US_DESCRIPTION="Efforts for DX release support"
+    TASK_DESCRIPTION="Support efforts for DX Release"
+    STORY_POINTS="3"
+    PRIORITY="2"
+    ACCEPTANCE_CRITERIA="Support DX Development Team"
+    echo az boards work-item create --title \"$AZ_USER_STORY_TITLE\" \
+        --assigned-to \"$AZ_USER_EMAIL\" \
+        --project \"$AZ_PROJECT\" \
+        --area \"$AZ_AREA\" \
+        --iteration \"$AZ_ITERATION\\$AZ_CURRENT_SPRINT\" \
+        --fields \
+        \"Microsoft.VSTS.Scheduling.StoryPoints=$STORY_POINTS\" \
+        \"Microsoft.VSTS.Common.Priority=$PRIORITY\" \
+        \"Microsoft.VSTS.Common.AcceptanceCriteria=$ACCEPTANCE_CRITERIA\"  \
+        --type \"user story\"  \
+        --description \"$DESCRIPTION\"
+
+    az boards work-item create --title "$AZ_USER_STORY_TITLE" \
+           --assigned-to "$AZ_USER_EMAIL" \
+           --project "$AZ_PROJECT" \
+           --area "$AZ_AREA" \
+           --iteration "$AZ_ITERATION\\$AZ_CURRENT_SPRINT" \
+           --fields \
+            "Microsoft.VSTS.Scheduling.StoryPoints=$STORY_POINTS" \
+            "Microsoft.VSTS.Common.Priority=$PRIORITY" \
+            "Microsoft.VSTS.Common.AcceptanceCriteria=$ACCEPTANCE_CRITERIA"  \
+            --type "user story"  \
+            --description "$DESCRIPTION" \
+            --open
 }
 
 az-create-userstory() {
@@ -33,7 +85,7 @@ az-create-userstory() {
         done 
 
     echo az boards work-item create --title \"$STORY_TITLE\" \
-           --assigned-to \"$AZ_ASSIGNED_TO\" \
+           --assigned-to \"$AZ_USER_EMAIL\" \
            --project \"$AZ_PROJECT\" \
            --area \"$AZ_AREA\" \
            --iteration \"$AZ_ITERATION\" \
@@ -45,7 +97,7 @@ az-create-userstory() {
             --description \"$DESCRIPTION\"
 
     az boards work-item create --title "$STORY_TITLE" \
-           --assigned-to "$AZ_ASSIGNED_TO" \
+           --assigned-to "$AZ_USER_EMAIL" \
            --project "$AZ_PROJECT" \
            --area "$AZ_AREA" \
            --iteration "$AZ_ITERATION" \
