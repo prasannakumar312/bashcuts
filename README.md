@@ -1,7 +1,9 @@
 # bashcuts
 Shortcuts using bashrc or bash_profile files.
 
-You may not already have a .bashrc file on your system. To create one, open a bash terminal and use the paste the command "touch ~/.bashrc" in the terminal.
+You may not already have a .bashrc file on your system. To create one, open a bash terminal and use the paste the below command in the terminal or create a new file in your user directory with the name  **.bashrc**
+
+**touch ~/.bashrc**" 
 
 You can also use the .bash_profile file instead of the .bashrc.
 
