@@ -1,10 +1,31 @@
 #SALESFORCE DX CLI ALIASES
 alias dxaliaslist="sfdx force:alias:list"
 
+dx-open-local-user-sfdx() {
+    echo start ~/.sfdx
+    start ~/.sfdx
+}
+
+dx-open-local-appdata-sfdx() {
+   start ~/AppData/Local/sfdx
+}
+
+dx-open-local-sfdx-log () {
+    echo code ~/.sfdx/sfdx.log
+    code ~/.sfdx/sfdx.log
+}
+
+dx-save-plugin-metadata() {
+    echo SFDX_MDAPI_TEMP_DIR=/users/myName/myDXProject/metadata
+    SFDX_MDAPI_TEMP_DIR=/users/myName/myDXProject/metadata
+}
+
 dx-show-orgs() {
     echo sfdx force:org:list
     sfdx force:org:list
 }
+
+
 
 alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
@@ -18,7 +39,7 @@ dx-open() {
     sfdx force:org:open --targetusername $TARGET_USERNAME
 }
 
-dx-docs-all() {
+dx-docs() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
 }
 
@@ -99,7 +120,7 @@ dx-retrieve-one() {
 
 }
 
-dx-show-versions-for-package() {
+dx-show-package-versions-for-specific-package() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read devhub
     echo What is the package alias\/id? \( --packages, p \)
@@ -124,6 +145,7 @@ dx-show-all-package-versions() {
     echo sfdx force:package:version:list --targetdevhubusername $devhub 
     sfdx force:package:version:list --targetdevhubusername $devhub 
 }
+
 dx-plugin-install() {
     # sfdx plugins:install texei-sfdx-plugin
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
@@ -138,6 +160,10 @@ dx-plugin-install() {
     read description
     echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
     sfdx force:package:
+}
+
+dx-open-local-plugins-packagejson() {
+    code ~/AppData/Local/sfdx/package.json
 }
 
 dx-texei-dependencies() {
@@ -159,7 +185,7 @@ dxlogout-all() {
 }
 
 
-dxset-username() {
+dx-config-set-local-username() {
     sfdx config:set defaultusername=$1
 }
 
@@ -196,8 +222,8 @@ dx-create-scratch() {
     read durationDays
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
-    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
-    sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
+    sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
 }
 
 dx-create-scratch-and-push() {
@@ -212,6 +238,28 @@ dx-create-scratch-and-push() {
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
+        echo "PUSHING CODEBASE TO $alias"
+        dx-push-quick $alias
+    else 
+        echo "The scratch org creation failed"
+    fi
+
+}
+
+dx-create-scratch-install-and-push() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
+    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    echo $command_result
+    if [[ $command_result =~ "Successfully" ]]
+    then
+        echo "INSTALLING DEPENDENCIES"
+        sfdx texei:package:dependencies:install -u $alias -v $devHub --noprompt -w 120
         echo "PUSHING CODEBASE TO $alias"
         dx-push-quick $alias
     else 
@@ -401,6 +449,11 @@ dx-pull() {
     sfdx force:source:pull --targetusername $TARGET_USERNAME
 }
 
+dx-pull-default() {
+    echo sfdx force:source:pull
+    sfdx force:source:pull
+}
+
 dx-push() {
     echo What is the username or alias to source push to? \( --targetusername \| -u \)
     read TARGET_USERNAME
@@ -415,8 +468,8 @@ dx-push-default() {
 
 
 dx-push-quick() {
-    echo sfdx force:source:push --targetusername $1
-    sfdx force:source:push --targetusername $1
+    echo sfdx force:source:push --targetusername $1 --wait 10
+    sfdx force:source:push --targetusername $1 --wait
 }
 
 sfdmu-org2org() {
@@ -626,7 +679,7 @@ dxlogstart () {
 # sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 005t0000001kkZ1AAI --values "ApexCode=FINEST Visualforce=FINER" --usetoolingapi --json --loglevel fatal
 }
 
-dxq() {
+dx-query() {
     sfdx force:data:soql:query -q "$1"
 }
 

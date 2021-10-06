@@ -6,9 +6,12 @@ alias gaa="git add ."
 alias gd="git diff"
 
 alias gl-graph="git log --graph --full-history --all --color --decorate=short"
-alias gl="git log --pretty=format:\"%h - %an, %ar : %s\""
+alias gl="git log --graph --name-status --pretty=format:\"%h - %an, %ar : %s\"" 
+alias gl-one-line="git log --pretty=oneline --graph --name-status"
+
 alias gcl="git config --local -e" #open up local config file for editing
 alias gcg="git config --global -e"
+
 
 alias g-stash-apply="git stash apply stash@{0}"
 
@@ -35,11 +38,16 @@ g-rename-current-branch() {
     git branch -m $NEW_BRANCH_NAME
 }
 
+# $ git log -S IE_Challenge_External_Id__c
+g-search-string() {
+    git log -S $1
+}
+
 g-ignore-filereset() {
     git rm --cached -r $1
 }
 
-g-reset-stage() {
+g-reset-staged() {
     git reset HEAD $1
 }
 
@@ -91,8 +99,12 @@ g-quick-commit-push() {
     gbp;
 }
 
-show-branches() {
-    git branch
+show-branches-local() {
+    git branch 
+}
+
+show-branches-all() {
+    git branch -a
 }
 
 g-delete-all-local-branches-but-master() {

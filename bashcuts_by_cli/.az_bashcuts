@@ -8,6 +8,16 @@ az-show-my-tasks() {
     az boards query --output table --wiql "select [id],[Work Item Type],[Title] from workitems where [system.assignedto] = '$AZ_USER_EMAIL' and [Work Item Type] = 'Task'"
 }
 
+az-query-all-pie-by-phrase() {
+    echo "What phrase would you like to query?"
+    read query_item
+    az boards query --output table --wiql "select [id],[Work Item Type],[Title],[System.AreaPath] from workitems where [System.AreaPath] = 'DTC Release\PIE' and ([Title] contains '$query_item' or [Description] contains '$query_item')" 
+}
+
+# ?worked
+# $ az boards query --output table --wiql "select [id],[Work Item Type],[Title] from workitems where [system.teamproject] = 'DTC Release'"
+
+
 az-set-default-organization() {
     echo What url represents the organization to default?
     read DEFAULT_ORG_URL
@@ -130,7 +140,7 @@ az-quick-wi-get() {
     az boards work-item show --id $1
 }
 
-az-quick-wi-open() {
+az-quick-open() {
     echo az boards work-item show --id $1 --open
     az boards work-item show --id $1 --open
 }

@@ -15,7 +15,6 @@ alias pow="start powershell"
 #RE-INITIALIZE CURRENTLY OPEN TERMINAL
 alias reinit="source ~/.bashrc"
 
-
 #list directory items with file size
 alias lt='ls --human-readable --size -1 -S --classify'
 
@@ -37,4 +36,8 @@ alias copy="clip.exe"
 
 open-url() {
    start $1
+}
+
+open-profile() {
+  code ~/.bashrc   
 }
