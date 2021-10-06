@@ -7,15 +7,19 @@ You may not already have a .bashrc file on your system. To create one, open a ba
 
 You can also use the .bash_profile file instead of the .bashrc.
 
-To get started, add the below logic to the your .bashrc file and from there it will load up all the aliases and functions referenced from the .bcut_home file
+To get started, add the below content and associated logic to the your .bashrc file and from there it will load up all the aliases and functions referenced from the .bcut_home file. The "NEW_SUPPORT_TICKET_URL" variable is referenced in the shortcuts file ".supportcuts" and when we enter "new-support-ticket" it will open a browser with that whatever url we set that variable to:
 
 
-    if [ -f /path_to_where_the_repo_lives_locally/bashcuts/.bcut_home ]; 
-    then 
-        echo "bashrc founc"
-        source /path_to_where_the_repo_lives_locally/bashcuts/.bcut_home; 
-    else
-        echo "missing bashrc"
-    fi
+populate-custom-supportcuts-variables() {
+	NEW_SUPPORT_TICKET_URL="https://myoganizations-supportdesk.supporting"
+}
 
-
+PATH_TO_BASHCUTS="/path/to/your/githubbachcuts/location"
+if [ -f $PATH_TO_BASHCUTS/bashcuts/.bcut_home ]; 
+then 
+    echo "bashrc loaded"
+	populate-custom-supportcuts-variables
+    source $PATH_TO_BASHCUTS/bashcuts/.bcut_home
+else
+    echo "missing bashrc"
+fi
