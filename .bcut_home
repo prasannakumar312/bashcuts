@@ -1,60 +1,59 @@
 
-
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.bash_commons ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.bash_commons ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.bash_commons; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.bash_commons; 
 else
     echo "missing commons"
 fi
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.sfdxcli_bashcuts; 
 else
     echo "missing sfdxcli"
 fi
 
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.gitcli_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.gitcli_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.gitcli_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.gitcli_bashcuts; 
 else
     echo "missing gitcli_bashcuts"
 fi
 
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ghcli_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.ghcli_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ghcli_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.ghcli_bashcuts; 
 else
     echo "missing ghcli_bashcuts"
 fi
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.open_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.open_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.open_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.open_bashcuts; 
 else
     echo "missing open_bashcuts"
 fi
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ccicli_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.ccicli_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.ccicli_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.ccicli_bashcuts; 
 else
     echo "missing ccicli_bashcuts"
 fi
 
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.az_bashcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.az_bashcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.az_bashcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.az_bashcuts; 
 else
     echo "missing az_bashcuts"
 fi
 
-if [ -f /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.supportcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.supportcuts ]; 
 then 
-    source /c/git/jdschleicher/bashcuts/bashcuts_by_cli/.supportcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.supportcuts; 
 else
     echo "missing supportcuts"
 fi
