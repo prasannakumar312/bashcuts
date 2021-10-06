@@ -11,14 +11,14 @@ To get started, add the below content and associated logic to the your .bashrc f
 
 
 		populate-custom-supportcuts-variables() {
-			NEW_SUPPORT_TICKET_URL="https://myoganizations-supportdesk.supporting"
+	        	NEW_SUPPORT_TICKET_URL="https://myoganizations-supportdesk.supporting"
 		}
 
 		PATH_TO_BASHCUTS="/path/to/your/githubbachcuts/location"
 		if [ -f $PATH_TO_BASHCUTS/bashcuts/.bcut_home ]; 
 		then 
 		    echo "bashrc loaded"
-			populate-custom-supportcuts-variables
+		    populate-custom-supportcuts-variables
 		    source $PATH_TO_BASHCUTS/bashcuts/.bcut_home
 		else
 		    echo "missing bashrc"
