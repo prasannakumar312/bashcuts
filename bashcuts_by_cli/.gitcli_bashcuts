@@ -43,6 +43,17 @@ g-search-string() {
     git log -S $1
 }
 
+g-search-file-updates() {
+    echo "What is the file with filepath to search?"
+    read -e FILENAME
+    echo "Searching Updates"
+    git log --all --source -- $FILENAME | grep -o "refs/heads/.*" | sort -u | xargs -I "{}" git log -1 --format=%aI%x20%S "{}" -- $FILENAME | sort -r
+}
+
+alias gl-graph="git log --graph --full-history --all --color --decorate=short"
+alias gl="git log --graph --name-status --pretty=format:\"%h - %an, %ar : %s\"" 
+alias gl-one-line="git log --pretty=oneline --graph --name-status"
+
 g-ignore-filereset() {
     git rm --cached -r $1
 }
@@ -136,13 +147,10 @@ g-action-init() {
     git push -u origin feature-$1;
 }
 
-g-repo-branch-structure() {
-    # git checkout -b "production";
-    # gbp;
-    git checkout -b "staging";
-    gbp;
-    git checkout -b "regression";
-    gbp;
-}
+
+
+
+
+
 
 
