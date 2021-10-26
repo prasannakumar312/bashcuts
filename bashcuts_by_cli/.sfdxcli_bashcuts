@@ -292,14 +292,24 @@ dx-create-scratch-dependencies-install-package() {
 }
 
 
-dx-convert-mdapi-to-source() {
-    echo What directory will the converted source format be stored \( --outputdir \| -d \)?
-    read OUTPUT_DIR
+dx-convert-mdapi-to-source-directory() {
     echo What directory contains the mdapi format metadata to convert? \( --rootdir \| -r \)?
-    read SOURCE_DIR
+    read -e SOURCE_DIR
+    echo What directory will the converted source format be stored \( --outputdir \| -d \)?
+    read -e OUTPUT_DIR
     echo sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
     sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
 }
+
+dx-convert-mdapi-to-source-file() {
+    echo What filepath to convert? \( --metadatapath \| -p \)?
+    read -e PATH
+    echo What directory will the converted source format be stored \( --outputdir \| -d \)?
+    read -e OUTPUT_DIR
+    echo sfdx force:mdapi:convert --metadatapath $PATH --outputdir $OUTPUT_DIR
+    sfdx force:mdapi:convert --metadatapath $PATH --outputdir $OUTPUT_DIR
+}
+
 
 dx-convert-source-to-mdapi() {
     echo What directory will the converted mdapi format be stored \( --outputdir \| -d \)?
@@ -469,7 +479,7 @@ dx-push-default() {
 
 dx-push-quick() {
     echo sfdx force:source:push --targetusername $1 --wait 10
-    sfdx force:source:push --targetusername $1 --wait
+    sfdx force:source:push --targetusername $1 --wait 10
 }
 
 sfdmu-org2org() {
@@ -664,19 +674,31 @@ dxqtflag () {
     # tracedenttiyid is user
 }
 
+dx-create-debuglevel-finest() {
+    echo sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
+}
+
+dx-create-and-trace-debug-level(){
+    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    echo $debug_results
+    debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
+    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
+    user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
+    echo $user_alias_results
+    notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
+    echo "$notQuite24Hours"
+    echo sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+}
+
 dxlogstart () {
     # yest=$(date --date="today + 23 hours" +"%d/%m/%Y/%h/%mm" +"%Y-%m-%dT%H:%M:%SZ")
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
     funcYest="$(dxqtflag)"
     echo $funcYest
-    sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid $1 --values StartDate='' ExpirationDate='"$notQuite24Hours"' --usetoolingapi --json --loglevel fatal
-    #logtype=DEVELOPER_LOG
-    #2do
-    #create trace flag for all finest
-    # sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
-# 005t0000001kkZ1AAI
-# sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 005t0000001kkZ1AAI --values "ApexCode=FINEST Visualforce=FINER" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' LogType='USER_DEBUG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dx-query() {
