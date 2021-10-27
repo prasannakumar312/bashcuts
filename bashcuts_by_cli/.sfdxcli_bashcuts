@@ -705,7 +705,7 @@ dx-query() {
     sfdx force:data:soql:query -q "$1"
 }
 
-dxq-csv() {
+dx-query-csv() {
     echo What is the username/alias \(--username \| -u\) where this soql will be run against?
     read alias
     echo What is the query?
@@ -717,9 +717,10 @@ dxq-csv() {
     fileName="$queryResultsDirectory"/"$dateAndTime".csv
     results=$(sfdx force:data:soql:query -q "$query" -r csv -u $alias) 
     echo "$results" > "$fileName"
+    start $fileName
 }
 
-dxq-json() {
+dx-query-json() {
     echo What is the username/alias \(--username \| -u\) where this soql will be run against?
     read alias
     echo What is the query?
@@ -731,9 +732,10 @@ dxq-json() {
     fileName="$queryResultsDirectory"/"$dateAndTime".json
     results=$(sfdx force:data:soql:query -q "$query" -r json -u $alias) 
     echo "$results" > "$fileName"
+    code $fileName
 }
 
-dxquery-tooling-csv() {
+dx-query-tooling-csv() {
     echo What is the username/alias \(--username \| -u\) where this soql will be run against?
     read alias
     echo What is the query?
@@ -753,76 +755,4 @@ dx-getfields-by-object() {
     echo sfdx shane:object:fields:describe -o $API_OBJECT_NAME
     sfdx shane:object:fields:describe -o $API_OBJECT_NAME
 }
-
-
-
-# 10:14:45.203 SFDX: Turn On Apex Debug Log for Replay Debugger 
-# Starting SFDX: Turn On Apex Debug Log for Replay Debugger
-
-# 10:14:54.138 sfdx force:data:soql:query --query SELECT id, logtype, startdate, expirationdate, debuglevelid, debuglevel.apexcode, debuglevel.visualforce FROM TraceFlag WHERE logtype='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE' --usetoolingapi --json --loglevel fatal
-# {
-#   "status": 0,
-#   "result": {
-#     "size": 1,
-#     "totalSize": 1,
-#     "done": true,
-#     "queryLocator": null,
-#     "entityTypeName": "TraceFlag",
-#     "records": [
-#       {
-#         "attributes": {
-#           "type": "TraceFlag",
-#           "url": "/services/data/v50.0/tooling/sobjects/TraceFlag/7tfr0000000PFukAAG"
-#         },
-#         "Id": "7tfr0000000PFukAAG",
-#         "LogType": "DEVELOPER_LOG",
-#         "StartDate": null,
-#         "ExpirationDate": "2021-01-22T15:17:58.000+0000",
-#         "DebugLevelId": "7dlt0000000blJTAAY",
-#         "DebugLevel": {
-#           "attributes": {
-#             "type": "DebugLevel",
-#             "url": "/services/data/v50.0/tooling/sobjects/DebugLevel/7dlt0000000blJTAAY"
-#           },
-#           "ApexCode": "FINEST",
-#           "Visualforce": "FINER"
-#         }
-#       }
-#     ]
-#   }
-# }
-# 10:15:00.649 sfdx force:data:soql:query --query SELECT id, logtype, startdate, expirationdate, debuglevelid, debuglevel.apexcode, debuglevel.visualforce FROM TraceFlag WHERE logtype='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE' --usetoolingapi --json --loglevel fatal
-#  ended with exit code 0
-
-# Starting sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
-
-# 10:15:00.683 sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
-# {
-#   "status": 0,
-#   "result": {
-#     "id": "7dlt0000000blJTAAY",
-#     "success": true,
-#     "errors": []
-#   }
-# }
-# 10:15:07.12 sfdx force:data:record:update --sobjecttype DebugLevel --sobjectid 7dlt0000000blJTAAY --values ApexCode=FINEST Visualforce=FINER --usetoolingapi --json --loglevel fatal
-#  ended with exit code 0
-
-# Starting sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
-
-# 10:15:07.46 sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
-# {
-#   "status": 0,
-#   "result": {
-#     "id": "7tfr0000000PFukAAG",
-#     "success": true,
-#     "errors": []
-#   }
-# }
-# 10:15:15.237 sfdx force:data:record:update --sobjecttype TraceFlag --sobjectid 7tfr0000000PFukAAG --values StartDate='' ExpirationDate='Fri, 22 Jan 2021 15:45:07 GMT' --usetoolingapi --json --loglevel fatal
-#  ended with exit code 0
-
-# 10:15:15.238 SFDX: Turn On Apex Debug Log for Replay Debugger 
-#  ended with exit code 0
-
 
