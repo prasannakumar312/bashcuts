@@ -1,0 +1,7 @@
+robot_debug_setup() {
+    export ROBOT_DEBUG="TRUE";
+}
+
+robot_debug_start() {
+    robot -d output .
+}

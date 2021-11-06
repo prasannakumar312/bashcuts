@@ -1,6 +1,18 @@
 #SALESFORCE DX CLI ALIASES
 alias dxaliaslist="sfdx force:alias:list"
 
+dx-open() {
+    echo sfdx force:org:open 
+    sfdx force:org:open
+}
+
+dx-open-by-alias() {
+    echo What is the username or alias of the org to open? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:org:open --targetusername $TARGET_USERNAME
+    sfdx force:org:open --targetusername $TARGET_USERNAME
+}
+
 dx-open-local-user-sfdx() {
     echo start ~/.sfdx
     start ~/.sfdx
@@ -31,13 +43,6 @@ alias dxdevhubpackagelist="sfdx force:package:list"
 alias dxlocalpackagelist="sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
 alias dxcleanscratch="sfdx force:org:list --clean"
-
-dx-open() {
-    echo What is the username or alias of the org to open? \( --targetusername \| -u \)
-    read TARGET_USERNAME
-    echo sfdx force:org:open --targetusername $TARGET_USERNAME
-    sfdx force:org:open --targetusername $TARGET_USERNAME
-}
 
 dx-docs() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
@@ -239,7 +244,8 @@ dx-create-scratch-and-push() {
     if [[ $command_result =~ "Successfully" ]]
     then
         echo "PUSHING CODEBASE TO $alias"
-        dx-push-quick $alias
+        echo sfdx force:source:push --targetusername $alias --wait 10
+        sfdx force:source:push --targetusername $alias --wait 10 
     else 
         echo "The scratch org creation failed"
     fi
@@ -261,11 +267,11 @@ dx-create-scratch-install-and-push() {
         echo "INSTALLING DEPENDENCIES"
         sfdx texei:package:dependencies:install -u $alias -v $devHub --noprompt -w 120
         echo "PUSHING CODEBASE TO $alias"
-        dx-push-quick $alias
+        echo sfdx force:source:push --targetusername $alias --wait 10
+        sfdx force:source:push --targetusername $alias --wait 10 
     else 
         echo "The scratch org creation failed"
     fi
-
 }
 
 dx-create-scratch-dependencies-install-package() {
@@ -453,6 +459,16 @@ dx-validate-deploy-path() {
 }
 
 dx-pull() {
+    echo sfdx force:source:pull 
+    sfdx force:source:pull
+}
+
+dx-pull-force() {
+    echo sfdx force:source:pull -f 
+    sfdx force:source:pull -f
+}
+
+dx-pull-by-alias() {
     echo What is the username or alias to source pull from? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:pull --targetusername $TARGET_USERNAME
@@ -464,23 +480,35 @@ dx-pull-default() {
     sfdx force:source:pull
 }
 
-dx-push() {
+dx-push-by-alias() {
     echo What is the username or alias to source push to? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:push --targetusername $TARGET_USERNAME
     sfdx force:source:push --targetusername $TARGET_USERNAME
 }
 
-dx-push-default() {
+dx-push() {
     echo sfdx force:source:push 
     sfdx force:source:push
 }
 
-
-dx-push-quick() {
-    echo sfdx force:source:push --targetusername $1 --wait 10
-    sfdx force:source:push --targetusername $1 --wait 10
+dx-push-force() {
+    echo sfdx force:source:push -f 
+    sfdx force:source:push -f
 }
+
+dx-get-revisions() {
+    echo sfdx force:data:soql:query -q "SELECT MemberName, MemberType, RevisionCounter FROM SourceMember" -t
+    sfdx force:data:soql:query -q "SELECT MemberName, MemberType, RevisionCounter FROM SourceMember" -t
+}
+
+dx-reset-to-revision() {
+    echo What revision would you like to reset to? \( --revision \| -r \)
+    read REVISION
+    echo sfdx force:source:tracking:reset --revision $REVISION
+    sfdx force:source:tracking:reset --revision $REVISION
+}
+
 
 sfdmu-org2org() {
     echo What is the username or alias to get data from? \( -s, --sourceusername \)
@@ -653,7 +681,13 @@ dx-test-path-json() {
     read -e DIRECTORY_PATH
     echo sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
     sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
+}
 
+dx-test-all() {
+    echo What alias/username for an authentication do you want to delete? \( --targetusername, -u \)
+    read TARGET_USERNAME
+    test_result = $(sfdx force:apex:test:run -u $TARGET_USERNAME --json --resultformat human --wait 3 --testlevel RunLocalTests)
+    echo test_result
 }
 
 dx-report-test () {
@@ -674,12 +708,12 @@ dxqtflag () {
     # tracedenttiyid is user
 }
 
-dx-create-debuglevel-finest() {
+dx-debug-create-debuglevel-finest() {
     echo sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
     sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
 }
 
-dx-create-and-trace-debug-level(){
+dx-debug-create-and-trace-debug-level(){
     debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
     echo $debug_results
     debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
@@ -688,8 +722,58 @@ dx-create-and-trace-debug-level(){
     echo $user_alias_results
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
-    echo sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+}
+
+dx-debug-create-trace-by-default-scratch() {
+    dx-debug-create-debuglevel-finest
+    echo sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
+    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    echo $debug_results
+    debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
+    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
+    user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
+    echo $user_alias_results
+    notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
+    echo "$notQuite24Hours"
+    echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+}
+
+dx-debug-create-trace-by-username() {
+    echo What is the Username to begin tracing debug logs for? 
+    read USERNAME
+    echo sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
+    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    echo $debug_results
+    debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
+    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Username='$USERNAME'" --loglevel trace --resultformat=json)
+    user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
+    echo $user_alias_results
+    notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
+    echo "$notQuite24Hours"
+    echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+}
+
+dx-debug-create-trace-by-username-and-org-alias(){
+    echo What is the alias of the org to begin debugging against? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo What is the Username to begin tracing debug logs for? 
+    read USERNAME
+    echo sfdx force:data:soql:query -u $TARGET_USERNAME -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
+    debug_results=$(sfdx force:data:soql:query -u $TARGET_USERNAME -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    echo $debug_results
+    debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
+    echo sfdx force:data:soql:query -u $TARGET_USERNAME -q "Select Id ,Alias from User WHERE Alias='$USERNAME'" --loglevel trace --resultformat=json 
+    user_alias_results=$(sfdx force:data:soql:query -u $TARGET_USERNAME -q "Select Id ,Alias from User WHERE Alias='$USERNAME'" --loglevel trace --resultformat=json)
+    user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
+    echo $user_alias_results
+    notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
+    echo "$notQuite24Hours"
+    echo sfdx force:data:record:create -u $TARGET_USERNAME --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    sfdx force:data:record:create -u $TARGET_USERNAME --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dxlogstart () {

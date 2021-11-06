@@ -12,3 +12,7 @@ gh-create-repo-from-dx-template() {
     echo gh repo create department-of-veterans-affairs/$ORG_NAME-$PROJECT_NAME --description \"$DESCRIPTION\" --template department-of-veterans-affairs/dtc-release-dx-repository-template --internal --confirm  
     gh repo create department-of-veterans-affairs/$ORG_NAME-$PROJECT_NAME --description "$DESCRIPTION" --template department-of-veterans-affairs/dtc-release-dx-repository-template --internal --confirm  
 }
+
+gh-docs() {
+    start https://cli.github.com/manual/index
+}

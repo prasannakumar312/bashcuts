@@ -51,11 +51,18 @@ else
     echo "missing az_bashcuts"
 fi
 
-if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.supportcuts ]; 
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.support_bashcuts ]; 
 then 
-    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.supportcuts; 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.support_bashcuts; 
 else
-    echo "missing supportcuts"
+    echo "missing support_bashcuts"
+fi
+
+if [ -f $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.robot_bashcuts ]; 
+then 
+    source $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.robot_bashcuts; 
+else
+    echo "missing robot_bashcuts"
 fi
 
 

@@ -16,4 +16,6 @@ alias o-bcut-bashrc="start $PATH_TO_BASHCUTS/bashcuts/.bcut_home"
 alias o-gcl="git config --local -e" #open up local config file for editing
 alias o-gcg="git config --global -e"
 alias o-sfdx-alias="start ~/.sfdx/alias.json"
-alias o-support="start $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.supportcuts"
+alias o-support="start $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.support_bashcuts"
+alias o-robot="start $PATH_TO_BASHCUTS/bashcuts/bashcuts_by_cli/.robot_bashcuts"
+alias o-bashcuts="code $PATH_TO_BASHCUTS"
