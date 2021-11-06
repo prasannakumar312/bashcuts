@@ -41,3 +41,11 @@ open-url() {
 open-profile() {
   code ~/.bashrc   
 }
+
+show-all-variables() {
+  compgen -v | while read line; do declare -p $line; done
+}
+
+show-all-environment-variables() {
+  compgen -v | while read line; do declare -xp $line; done
+}
