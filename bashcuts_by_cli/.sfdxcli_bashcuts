@@ -1,16 +1,16 @@
 #SALESFORCE DX CLI ALIASES
-alias dxaliaslist="sfdx force:alias:list"
+alias dxaliaslist="time sfdx force:alias:list"
 
 dx-open() {
     echo sfdx force:org:open 
-    sfdx force:org:open
+    time sfdx force:org:open
 }
 
 dx-open-by-alias() {
     echo What is the username or alias of the org to open? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:org:open --targetusername $TARGET_USERNAME
-    sfdx force:org:open --targetusername $TARGET_USERNAME
+    time sfdx force:org:open --targetusername $TARGET_USERNAME
 }
 
 dx-open-local-user-sfdx() {
@@ -34,15 +34,15 @@ dx-save-plugin-metadata() {
 
 dx-show-orgs() {
     echo sfdx force:org:list
-    sfdx force:org:list
+    time sfdx force:org:list
 }
 
 
 
-alias dxdevhubpackagelist="sfdx force:package:list"
-alias dxlocalpackagelist="sfdx force:package:installed:list"
+alias dxdevhubpackagelist="time sfdx force:package:list"
+alias dxlocalpackagelist="time sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
-alias dxcleanscratch="sfdx force:org:list --clean"
+alias dxcleanscratch="time sfdx force:org:list --clean"
 
 dx-docs() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
@@ -58,14 +58,14 @@ dx-docs-config() {
 
 dx-open-default() {
     echo sfdx force:org:open
-    sfdx force:org:open
+    time sfdx force:org:open
 }
 
 dx-show-packages() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read devhub
     echo sfdx force:package:list --targetdevhubusername $devhub
-    sfdx force:package:list --targetdevhubusername $devhub
+    time sfdx force:package:list --targetdevhubusername $devhub
 }
 
 dx-install-package-noprompt() {
@@ -74,7 +74,7 @@ dx-install-package-noprompt() {
     echo What is the Subscriber Package Version Id \( --package, -p \)?
     read PACKAGE_VERSION_ID
     echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
-    sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
+    time sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
 }
 
 dx-install-package-production() {
@@ -83,22 +83,22 @@ dx-install-package-production() {
     echo What is the Subscriber Package Version Id \( --package, -p \)?
     read PACKAGE_VERSION_ID
     echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
-    sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
+    time sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --apexcompile --wait 45
 
 }
 
 dx-apex() {
-    sfdx force:apex:execute -u $1
+    time sfdx force:apex:execute -u $1
 }
 
 dx-promote-package() {
-    # sfdx force:package:version:promote
+    # time sfdx force:package:version:promote
     echo What is the alias/username of the DevHub \(--targetdevhubusername, -v \)?
     read DEVHUB_ALIAS
-    echo What is the alias of the package to promote \( --package, -p \)
-    read PACKAGE_ALIAS
-    sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_ALIAS --noprompt
-    sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_ALIAS --noprompt
+    echo What is the 04t package Id to promote \( --package, -p \)
+    read PACKAGE_04T_ID
+    echo sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_04T_ID --noprompt
+    time sfdx force:package:version:promote --targetdevhubusername $DEVHUB_ALIAS --package $PACKAGE_04T_ID --noprompt
 }
 
 dx-retrieve-manifest() {
@@ -108,7 +108,7 @@ dx-retrieve-manifest() {
     echo What is the package.xml directory path \( -x \| --manifest\)?
     read MANIFEST_PATH
     echo sfdx force:source:retrieve --manifest $MANIFEST_PATH --targetusername $ALIAS
-    sfdx force:source:retrieve --manifest $MANIFEST_PATH --targetusername $ALIAS
+    time sfdx force:source:retrieve --manifest $MANIFEST_PATH --targetusername $ALIAS
 
 }
 
@@ -121,7 +121,7 @@ dx-retrieve-one() {
     echo What is the API name of the metadata you are retrieving? \( -m \| --metadata\)?
     read METADATA_API_NAME
     echo sfdx force:source:retrieve --metadata=\"$METADATA_TYPE:$METADATA_API_NAME\" --targetusername $ALIAS
-    sfdx force:source:retrieve --metadata "$METADATA_TYPE:$METADATA_API_NAME" --targetusername $ALIAS
+    time sfdx force:source:retrieve --metadata "$METADATA_TYPE:$METADATA_API_NAME" --targetusername $ALIAS
 
 }
 
@@ -131,7 +131,7 @@ dx-show-package-versions-for-specific-package() {
     echo What is the package alias\/id? \( --packages, p \)
     read PACKAGE_ALIAS
     echo sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
-    sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
+    time sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
 }
 
 dx-show-package-version-component-viewer() {
@@ -148,7 +148,7 @@ dx-show-all-package-versions() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername\)?
     read devhub
     echo sfdx force:package:version:list --targetdevhubusername $devhub 
-    sfdx force:package:version:list --targetdevhubusername $devhub 
+    time sfdx force:package:version:list --targetdevhubusername $devhub 
 }
 
 dx-plugin-install() {
@@ -164,7 +164,7 @@ dx-plugin-install() {
     echo What is the package description?\(--description\)?
     read description
     echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
-    sfdx force:package:
+    time sfdx force:package:
 }
 
 dx-open-local-plugins-packagejson() {
@@ -200,11 +200,11 @@ dxset-D() {
 
 dx-org-verbose() {
     echo sfdx force:org:display -u $1 --verbose
-    sfdx force:org:display -u $1 --verbose
+    time sfdx force:org:display -u $1 --verbose
 }
 
 dx-limits() {
-    sfdx force:limits:api:display -u $1
+    time sfdx force:limits:api:display -u $1
 }
 
 dx-show-config() {
@@ -217,7 +217,7 @@ dxdata-load() {
   echo What alias/username \(--targetusername \| -u \) will this data be uploaded to?
   read alias
   echo sfdx force:data:tree:import -plan $path --targetusername $alias
-  sfdx force:data:tree:import --plan $path --targetusername $alias
+  time sfdx force:data:tree:import --plan $path --targetusername $alias
 }
 
 dx-create-scratch() {
@@ -228,7 +228,7 @@ dx-create-scratch() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
-    sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
+    time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
 }
 
 dx-create-scratch-and-push() {
@@ -239,13 +239,13 @@ dx-create-scratch-and-push() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
         echo "PUSHING CODEBASE TO $alias"
         echo sfdx force:source:push --targetusername $alias --wait 10
-        sfdx force:source:push --targetusername $alias --wait 10 
+        time sfdx force:source:push --targetusername $alias --wait 10 
     else 
         echo "The scratch org creation failed"
     fi
@@ -260,7 +260,7 @@ dx-create-scratch-install-and-push() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -268,7 +268,7 @@ dx-create-scratch-install-and-push() {
         sfdx texei:package:dependencies:install -u $alias -v $devHub --noprompt -w 120
         echo "PUSHING CODEBASE TO $alias"
         echo sfdx force:source:push --targetusername $alias --wait 10
-        sfdx force:source:push --targetusername $alias --wait 10 
+        time sfdx force:source:push --targetusername $alias --wait 10 
     else 
         echo "The scratch org creation failed"
     fi
@@ -282,7 +282,7 @@ dx-create-scratch-dependencies-install-package() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -304,7 +304,7 @@ dx-convert-mdapi-to-source-directory() {
     echo What directory will the converted source format be stored \( --outputdir \| -d \)?
     read -e OUTPUT_DIR
     echo sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
-    sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+    time sfdx force:mdapi:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
 }
 
 dx-convert-mdapi-to-source-file() {
@@ -313,7 +313,7 @@ dx-convert-mdapi-to-source-file() {
     echo What directory will the converted source format be stored \( --outputdir \| -d \)?
     read -e OUTPUT_DIR
     echo sfdx force:mdapi:convert --metadatapath $PATH --outputdir $OUTPUT_DIR
-    sfdx force:mdapi:convert --metadatapath $PATH --outputdir $OUTPUT_DIR
+    time sfdx force:mdapi:convert --metadatapath $PATH --outputdir $OUTPUT_DIR
 }
 
 
@@ -323,9 +323,9 @@ dx-convert-source-to-mdapi() {
     echo What directory contains the source format metadata to convert? \( --rootdir \| -r \)?
     read SOURCE_DIR
     echo sfdx force:source:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
-    sfdx force:source:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
-    #   $ sfdx force:source:convert -r path/to/source
-    #   $ sfdx force:source:convert -r path/to/source -d path/to/outputdir -n 'My Package
+    time sfdx force:source:convert --rootdir $SOURCE_DIR --outputdir $OUTPUT_DIR
+    #   $ time sfdx force:source:convert -r path/to/source
+    #   $ time sfdx force:source:convert -r path/to/source -d path/to/outputdir -n 'My Package
 }
 
 dx-create-project() {
@@ -335,7 +335,7 @@ dx-create-project() {
     echo What is the template \(-t \| --template \) of the project? \( can be standard, empty, analytics \)
     read template
     echo sfdx force:project:create --projectname $projectName --template $template
-    sfdx force:project:create --projectname $projectName --template $template
+    time sfdx force:project:create --projectname $projectName --template $template
     
 }
 
@@ -351,7 +351,7 @@ dx-create-package() {
     echo What is the package description?\(--description\)?
     read description
     echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
-    sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    time sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
 }
 
 dx-create-package-version-skipvalidation() {
@@ -360,7 +360,7 @@ dx-create-package-version-skipvalidation() {
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
     echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
-    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
 }
 
 dx-report-package-version() {
@@ -369,7 +369,7 @@ dx-report-package-version() {
     echo What is the DevHub username/alias? \( -v, --targetdevhubusername \)
     read DEVHUB_ALIAS
     echo sfdx force:package:version:create:report -i $PACKAGE_VERSION_ID -v $DEVHUB_ALIAS
-    sfdx force:package:version:create:report -i $PACKAGE_VERSION_ID -v $DEVHUB_ALIAS
+    time sfdx force:package:version:create:report -i $PACKAGE_VERSION_ID -v $DEVHUB_ALIAS
 }
 
 dx-create-package-version-validate() {
@@ -378,7 +378,7 @@ dx-create-package-version-validate() {
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
     echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
-    sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
 }
 
 
@@ -397,7 +397,7 @@ dx-create-data-user() {
          Email='$email' \
          Username='$username' \
          Nickname='$alias' "
-    sfdx force:data:record:create --sobjecttype User --perflog --json --values="FirstName='$firstName' LastName='$lastName' Email='$email' Username='$username'"
+    time sfdx force:data:record:create --sobjecttype User --perflog --json --values="FirstName='$firstName' LastName='$lastName' Email='$email' Username='$username'"
 }
 
 dx-assign-permset() {
@@ -406,20 +406,20 @@ dx-assign-permset() {
     echo What is the name of the Permission Set to assign for this user? \( -n, --permsetname \)
     read PERMISSIONSET_NAME
     echo sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
-    sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
+    time sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
 }
 
 dx-quickdeploy-permsets-dx() {
     echo ORG username or alias to deploy to?
     read targetusername
     echo sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
-    sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
+    time sfdx force:source:deploy --sourcepath "/c/git/QUICKMETADATA/permissionsets/dx" --targetusername $targetusername
 }
 
 dx-deploy-manifest() {
     echo What is the ORG username or alias to deploy to?
     read targetusername
-    sfdx force:source:deploy -x path/to/package.xml
+    time sfdx force:source:deploy -x path/to/package.xml
 }
 
 dx-deploy-checkonly() {
@@ -428,7 +428,7 @@ dx-deploy-checkonly() {
     echo Where is the Source Directory located? \( --sourcepath \| -p \)
     read SOURCE_DIRECTORY
     echo sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
-    sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
+    time sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME --checkonly
 }
 
 dx-deploy() {
@@ -437,7 +437,7 @@ dx-deploy() {
     echo Where is the Source Directory located? \( --sourcepath \| -p \)
     read SOURCE_DIRECTORY
     echo sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME
-    sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME 
+    time sfdx force:source:deploy --sourcepath $SOURCE_DIRECTORY --targetusername $TARGET_USERNAME 
 }
 
 dx-deploy-path() {
@@ -446,7 +446,7 @@ dx-deploy-path() {
     echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
     read -e SOURCEPATH
     echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
-    sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
+    time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
 }
 
 dx-validate-deploy-path() {
@@ -455,58 +455,65 @@ dx-validate-deploy-path() {
     echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
     read -e SOURCEPATH
     echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
-    sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
+    time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
 }
 
 dx-pull() {
     echo sfdx force:source:pull 
-    sfdx force:source:pull
+    time sfdx force:source:pull
 }
 
 dx-pull-force() {
     echo sfdx force:source:pull -f 
-    sfdx force:source:pull -f
+    time sfdx force:source:pull -f
 }
 
 dx-pull-by-alias() {
     echo What is the username or alias to source pull from? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:pull --targetusername $TARGET_USERNAME
-    sfdx force:source:pull --targetusername $TARGET_USERNAME
+    time sfdx force:source:pull --targetusername $TARGET_USERNAME
 }
 
 dx-pull-default() {
     echo sfdx force:source:pull
-    sfdx force:source:pull
+    time sfdx force:source:pull
 }
 
 dx-push-by-alias() {
     echo What is the username or alias to source push to? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:source:push --targetusername $TARGET_USERNAME
-    sfdx force:source:push --targetusername $TARGET_USERNAME
+    time sfdx force:source:push --targetusername $TARGET_USERNAME
 }
 
 dx-push() {
     echo sfdx force:source:push 
-    sfdx force:source:push
+    time sfdx force:source:push
 }
 
 dx-push-force() {
     echo sfdx force:source:push -f 
-    sfdx force:source:push -f
+    time sfdx force:source:push -f
 }
 
-dx-get-revisions() {
+dx-show-revisions() {
     echo sfdx force:data:soql:query -q "SELECT MemberName, MemberType, RevisionCounter FROM SourceMember" -t
-    sfdx force:data:soql:query -q "SELECT MemberName, MemberType, RevisionCounter FROM SourceMember" -t
+    time sfdx force:data:soql:query -q "SELECT MemberName, MemberType, RevisionCounter FROM SourceMember" -t
 }
 
 dx-reset-to-revision() {
+    echo What is the alias of the scratch org to reset? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:source:tracking:reset --targetusername  $TARGET_USERNAME
+    time sfdx force:source:tracking:reset --targetusername  $TARGET_USERNAME
+}
+
+dx-reset-full-by-alias() {
     echo What revision would you like to reset to? \( --revision \| -r \)
     read REVISION
     echo sfdx force:source:tracking:reset --revision $REVISION
-    sfdx force:source:tracking:reset --revision $REVISION
+    time sfdx force:source:tracking:reset --revision $REVISION
 }
 
 
@@ -575,25 +582,25 @@ dx-delete-auth() {
     echo What alias/username for an authentication do you want to delete? \( --targetusername, -u \)
     read TARGET_USERNAME
     echo sfdx force:auth:logout -u $TARGET_USERNAME
-    sfdx force:auth:logout -u $TARGET_USERNAME
+    time sfdx force:auth:logout -u $TARGET_USERNAME
 }
 
 dx-delete-scratch() {
     echo What scratch org do you want to delete by alias/username? \( --targetusername, -u \)
     read TARGET_USERNAME
     echo sfdx force:org:delete -u $TARGET_USERNAME
-    sfdx force:org:delete -u $TARGET_USERNAME
+    time sfdx force:org:delete -u $TARGET_USERNAME
 }
 
 #sfdx Salesforce DX Aliases Functions
 lwc-debug-byghconfig() {
     aliasAssociatedUserName=$(git config sf-va-dev-environment.user-name-value)
     alias=$(git config sf-va-dev-environment.alias)
-    sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
+    time sfdx force:data:record:update --sobjecttype=User --where="Username="$aliasAssociatedUserName"" --values="UserPreferencesUserDebugModePref=$1"
 }
 
 lwc-debug() {
-    sfdx force:data:record:update --sobjecttype=User --where="Username="$1"" --values="UserPreferencesUserDebugModePref=$2"
+    time sfdx force:data:record:update --sobjecttype=User --where="Username="$1"" --values="UserPreferencesUserDebugModePref=$2"
 }
 
 dx-auth-custom() {
@@ -651,27 +658,27 @@ dx-test-method () {
     read ORG_ALIAS_OR_USERNAME
     echo "Enter test parameter.. in format: ClassName.MethodName"
     read TEST_PARAM
-    sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --targetusername $ORG_ALIAS_OR_USERNAME
+    time sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --targetusername $ORG_ALIAS_OR_USERNAME
 }
 
 dx-test-method-codecoverage () {
-    sfdx force:apex:test:run --resultformat human --loglevel error --tests $1 --codecoverage
+    time sfdx force:apex:test:run --resultformat human --loglevel error --tests $1 --codecoverage
 }
 
 dx-test-suite () {
-    sfdx force:apex:test:run --resultformat human --loglevel error -s $1
+    time sfdx force:apex:test:run --resultformat human --loglevel error -s $1
 }
 
 dx-test-suite-codecoverage () {
-    sfdx force:apex:test:run --resultformat human --loglevel error -s $1 --codecoverage
+    time sfdx force:apex:test:run --resultformat human --loglevel error -s $1 --codecoverage
 }
 
 dx-test-classes () {
-    sfdx force:apex:test:run --classnames \"$1\" --loglevel error 
+    time sfdx force:apex:test:run --classnames \"$1\" --loglevel error 
 }
 
 dx-test-classes-codecoverage () {
-    sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
+    time sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
 }
 
 dx-test-path-json() {
@@ -680,81 +687,81 @@ dx-test-path-json() {
     echo What is the directory path where the tests are located? \( -d, --directory \)
     read -e DIRECTORY_PATH
     echo sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
-    sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
+    time sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
 }
 
 dx-test-all() {
     echo What alias/username for an authentication do you want to delete? \( --targetusername, -u \)
     read TARGET_USERNAME
-    test_result = $(sfdx force:apex:test:run -u $TARGET_USERNAME --json --resultformat human --wait 3 --testlevel RunLocalTests)
+    test_result = $(time sfdx force:apex:test:run -u $TARGET_USERNAME --json --resultformat human --wait 3 --testlevel RunLocalTests)
     echo test_result
 }
 
 dx-report-test () {
     echo What is the test run Id \( -i \)?
     read TEST_RUN_ID
-    sfdx force:apex:test:report -i $TEST_RUN_ID
+    time sfdx force:apex:test:report -i $TEST_RUN_ID
 }
 
 dxcc () {
-    sfdx force:data:soql:query --query  "SELECT NumLinesCovered, NumLinesUncovered, ApexClassOrTrigger.Name FROM ApexCodeCoverage WHERE ApexClassOrTrigger.Name in ('$1')" --usetoolingapi
+    time sfdx force:data:soql:query --query  "SELECT NumLinesCovered, NumLinesUncovered, ApexClassOrTrigger.Name FROM ApexCodeCoverage WHERE ApexClassOrTrigger.Name in ('$1')" --usetoolingapi
 }
 
 dxqtflag () {
     sfUserNameFromGitConfig=$()
-    userId=$(sfdx force:data:soql:query --query "SELECT Id FROM User WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
-    results=$(sfdx force:data:soql:query --query "SELECT debuglevelid FROM TraceFlag WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
-    # sfdx force:data:soql:query --query "SELECT ID FROM TraceFlag LIMIT 10" 
+    userId=$(time sfdx force:data:soql:query --query "SELECT Id FROM User WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
+    results=$(time sfdx force:data:soql:query --query "SELECT debuglevelid FROM TraceFlag WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
+    # time sfdx force:data:soql:query --query "SELECT ID FROM TraceFlag LIMIT 10" 
     # tracedenttiyid is user
 }
 
-dx-debug-create-debuglevel-finest() {
+dx-create-debuglevel-finest() {
     echo sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json --loglevel fatal
 }
 
 dx-debug-create-and-trace-debug-level(){
-    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    debug_results=$(time sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
     echo $debug_results
     debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
-    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
+    user_alias_results=$(time sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
     user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
     echo $user_alias_results
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
     echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dx-debug-create-trace-by-default-scratch() {
     dx-debug-create-debuglevel-finest
     echo sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
-    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    debug_results=$(time sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
     echo $debug_results
     debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
-    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
+    user_alias_results=$(time sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Alias='UUser'" --loglevel trace --resultformat=json)
     user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
     echo $user_alias_results
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
     echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dx-debug-create-trace-by-username() {
     echo What is the Username to begin tracing debug logs for? 
     read USERNAME
     echo sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
-    debug_results=$(sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    debug_results=$(time sfdx force:data:soql:query -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
     echo $debug_results
     debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
-    user_alias_results=$(sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Username='$USERNAME'" --loglevel trace --resultformat=json)
+    user_alias_results=$(time sfdx force:data:soql:query -q "Select Id ,Alias from User WHERE Username='$USERNAME'" --loglevel trace --resultformat=json)
     user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
     echo $user_alias_results
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
     echo sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dx-debug-create-trace-by-username-and-org-alias(){
@@ -763,17 +770,17 @@ dx-debug-create-trace-by-username-and-org-alias(){
     echo What is the Username to begin tracing debug logs for? 
     read USERNAME
     echo sfdx force:data:soql:query -u $TARGET_USERNAME -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json
-    debug_results=$(sfdx force:data:soql:query -u $TARGET_USERNAME -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
+    debug_results=$(time sfdx force:data:soql:query -u $TARGET_USERNAME -q "select Id, DeveloperName From DebugLevel Where DeveloperName = 'FINEST_ALL'" --usetoolingapi --loglevel trace --resultformat=json)
     echo $debug_results
     debug_level_id=$(echo $debug_results | jq -r '.result.records[0].Id')
     echo sfdx force:data:soql:query -u $TARGET_USERNAME -q "Select Id ,Alias from User WHERE Alias='$USERNAME'" --loglevel trace --resultformat=json 
-    user_alias_results=$(sfdx force:data:soql:query -u $TARGET_USERNAME -q "Select Id ,Alias from User WHERE Alias='$USERNAME'" --loglevel trace --resultformat=json)
+    user_alias_results=$(time sfdx force:data:soql:query -u $TARGET_USERNAME -q "Select Id ,Alias from User WHERE Alias='$USERNAME'" --loglevel trace --resultformat=json)
     user_id=$(echo $user_alias_results | jq -r '.result.records[0].Id')
     echo $user_alias_results
     notQuite24Hours=$(date --date="today + 23 hours" +"%Y-%m-%dT%H:%M:%SZ")
     echo "$notQuite24Hours"
     echo sfdx force:data:record:create -u $TARGET_USERNAME --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
-    sfdx force:data:record:create -u $TARGET_USERNAME --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create -u $TARGET_USERNAME --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' DebugLevelId='$debug_level_id' TracedEntityId='$user_id' LogType='DEVELOPER_LOG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dxlogstart () {
@@ -782,11 +789,11 @@ dxlogstart () {
     echo "$notQuite24Hours"
     funcYest="$(dxqtflag)"
     echo $funcYest
-    sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' LogType='USER_DEBUG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
+    time sfdx force:data:record:create -u funq-test-2 --sobjecttype TraceFlag --values "StartDate='' ExpirationDate='$notQuite24Hours' LogType='USER_DEBUG' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'" --usetoolingapi --json --loglevel fatal
 }
 
 dx-query() {
-    sfdx force:data:soql:query -q "$1"
+    time sfdx force:data:soql:query -q "$1"
 }
 
 dx-query-csv() {
@@ -799,7 +806,7 @@ dx-query-csv() {
     queryResultsDirectory=queryResults
     mkdir -p "$queryResultsDirectory"
     fileName="$queryResultsDirectory"/"$dateAndTime".csv
-    results=$(sfdx force:data:soql:query -q "$query" -r csv -u $alias) 
+    results=$(time sfdx force:data:soql:query -q "$query" -r csv -u $alias) 
     echo "$results" > "$fileName"
     start $fileName
 }
@@ -814,7 +821,7 @@ dx-query-json() {
     queryResultsDirectory=queryResults
     mkdir -p "$queryResultsDirectory"
     fileName="$queryResultsDirectory"/"$dateAndTime".json
-    results=$(sfdx force:data:soql:query -q "$query" -r json -u $alias) 
+    results=$(time sfdx force:data:soql:query -q "$query" -r json -u $alias) 
     echo "$results" > "$fileName"
     code $fileName
 }
@@ -829,7 +836,7 @@ dx-query-tooling-csv() {
     queryResultsDirectory=queryResults
     mkdir -p "$queryResultsDirectory"
     fileName="$queryResultsDirectory"/"$dateAndTime".csv
-    results=$(sfdx force:data:soql:query --usetoolingapi -q "$query" -r csv -u $alias) 
+    results=$(time sfdx force:data:soql:query --usetoolingapi -q "$query" -r csv -u $alias) 
     echo "$results" > "$fileName"
 }
 

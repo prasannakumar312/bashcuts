@@ -20,7 +20,6 @@ alias g-reset-commit="git reset --soft HEAD^1"
 alias g-reset-head="git reset --hard HEAD"
 
 alias gbp="git push origin HEAD"
-alias g-clean="git clean -f -d"
 
 #git functions
 gc() {
@@ -44,6 +43,13 @@ g-search-string() {
 }
 
 g-search-file-updates() {
+    echo "What is the file with filepath to search?"
+    read -e FILENAME
+    echo "Searching Updates"
+    git log --all --source -- $FILENAME | grep -o "refs/heads/.*" | sort -u | xargs -I "{}" git log --pretty=oneline --graph -1 --format=%aI%x20%S "{}" -- $FILENAME | sort -r
+}
+
+g-file-history() {
     echo "What is the file with filepath to search?"
     read -e FILENAME
     echo "Searching Updates"
@@ -110,11 +116,11 @@ g-quick-commit-push() {
     gbp;
 }
 
-show-branches-local() {
+g-show-branches-local() {
     git branch 
 }
 
-show-branches-all() {
+g-show-branches-all() {
     git branch -a
 }
 
