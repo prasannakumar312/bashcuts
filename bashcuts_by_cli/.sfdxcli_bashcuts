@@ -52,8 +52,16 @@ dx-docs-force() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force.htm
 }
 
+dx-docs-force-apex() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_apex.htm#cli_reference_force_apex
+}
+
 dx-docs-config() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_config.htm
+}
+
+dx-docs-scratch-org-features() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm
 }
 
 dx-open-default() {
@@ -87,8 +95,13 @@ dx-install-package-production() {
 
 }
 
-dx-apex() {
-    time sfdx force:apex:execute -u $1
+dx-apex-by-alias-and-file() {
+    echo What is the alias/username of the org running apex against \(--targetusername, -u\)?
+    read TARGET_ALIAS
+    echo What is the file containing apex to run \(--apexcodefile , -f\)?
+    read -e FILE
+    echo sfdx force:apex:execute --targetusername $TARGET_ALIAS --apexcodefile $FILE
+    time sfdx force:apex:execute --targetusername $TARGET_ALIAS --apexcodefile $FILE
 }
 
 dx-promote-package() {
@@ -171,13 +184,13 @@ dx-open-local-plugins-packagejson() {
     code ~/AppData/Local/sfdx/package.json
 }
 
-dx-texei-dependencies() {
+dx-texei-install-dependencies() {
     echo What is the alias/username of the DevHub \(--targetdevhubusername, -v\)?
     read DEVHUB_ALIAS
     echo What is the alias/username of the scratch org \(--targetusername, -u \)?
     read SCRATCH_ORG_ALIAS
     echo sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
-    sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
+    time sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
 
 }
 
@@ -194,7 +207,7 @@ dx-config-set-local-username() {
     sfdx config:set defaultusername=$1
 }
 
-dxset-D() {
+dx-set-devhub-alias() {
     sfdx config:set defaultdevhubusername=$1
 }
 
@@ -211,7 +224,7 @@ dx-show-config() {
     sfdx config:list
 }
 
-dxdata-load() {
+dx-data-load() {
   echo What path/plan \(p \| --plan \)?
   read path
   echo What alias/username \(--targetusername \| -u \) will this data be uploaded to?
@@ -363,6 +376,17 @@ dx-create-package-version-skipvalidation() {
     time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
 }
 
+dx-create-package-version-with-version-number() {
+    echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    read targetdevhubusername
+    echo What is the package alias being versioned?\(--package \| -p\)?
+    read packageNameAlias
+    echo What is the specific magor.minor.patch.build version number to represent this package version?\( --versionnumber \| -n\)
+    read versionNumber
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --wait 120 --codecoverage
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --wait 120 --codecoverage
+}
+
 dx-report-package-version() {
     echo What is the package version creation report Id? \( -i, --packagecreaterequestid \)
     read PACKAGE_VERSION_ID
@@ -377,8 +401,10 @@ dx-create-package-version-validate() {
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
-    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
+    echo What is the package version number? \(--versionnumber \| -n\)?
+    read versionNumber
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --codecoverage --wait 100 
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --codecoverage --wait 100 
 }
 
 
@@ -403,7 +429,7 @@ dx-create-data-user() {
 dx-assign-permset() {
     echo What is the alias/username\(-u, targetusername \) for the ORG?
     read TARGET_USERNAME
-    echo What is the name of the Permission Set to assign for this user? \( -n, --permsetname \)
+    echo What is the name of the Permission Set\(s\) -- use comma to separate -- to assign for this user? \( -n, --permsetname \)
     read PERMISSIONSET_NAME
     echo sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
     time sfdx force:user:permset:assign --permsetname $PERMISSIONSET_NAME --targetusername $TARGET_USERNAME
@@ -713,6 +739,13 @@ dxqtflag () {
     results=$(time sfdx force:data:soql:query --query "SELECT debuglevelid FROM TraceFlag WHERE LogType='DEVELOPER_LOG' AND TracedEntityId='005t0000001yHw2AAE'" --usetoolingapi)
     # time sfdx force:data:soql:query --query "SELECT ID FROM TraceFlag LIMIT 10" 
     # tracedenttiyid is user
+}
+
+dx-create-debuglevel-finest-by-alias() {
+    echo What alias/username for target org? \( --targetusername, -u \)
+    read TARGET_ALIAS
+    echo sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json -u $TARGET_ALIAS --loglevel fatal
+    time sfdx force:data:record:create --sobjecttype DebugLevel --values "MasterLabel='FINEST ALL' DeveloperName='FINEST_ALL' System='Fine' Nba='Fine' Wave='Finest' ApexCode='Finest' Database='Finest' Workflow='Finer' Validation='Info' Callout='Finest' ApexProfiling='Finest'"  --usetoolingapi --json -u $TARGET_ALIAS --loglevel fatal
 }
 
 dx-create-debuglevel-finest() {
