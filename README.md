@@ -25,7 +25,7 @@ To get started, add the below content and associated logic to the your .bashrc f
 		fi
 		
 # To See Where Shortcuts our Loaded and may be available
-* "o-" for "Open"-- "o-sfdx" will open the file containing all aliases and supporting logic for sfdx cli shortcuts
+* "o-" for "Open" --> "o-sfdx" will open the file containing all aliases and supporting logic for sfdx cli shortcuts
 * To see all possible aliases and associated functions, in bash terminal, type "o-" and then press tab to see options of each file of shortcuts  
 
 # Tools used within these alias shortcuts
