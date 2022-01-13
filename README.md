@@ -25,17 +25,12 @@ To get started, add the below content and associated logic to the your .bashrc f
 		fi
 		
 # To See Where Shortcuts our Loaded and may be available
-* enter "o-bcut-bashrc" in a bash terminal
-* To see alias' and associated functions, in bash terminal, type "o-" and then press tab to see options of each file of shortcuts  
+* "o-" for "Open"-- "o-sfdx" will open the file containing all aliases and supporting logic for sfdx cli shortcuts
+* To see all possible aliases and associated functions, in bash terminal, type "o-" and then press tab to see options of each file of shortcuts  
 
 # Tools used within these alias shortcuts
 
 * Powershell 7 (and higher) - Installation instructions by operating system: https://github.com/powershell/powershell#get-powershell
-* Python 3
-   1. Download the latest version of python here: https://www.python.org/downloads/ 
-     1. Be sure to select "Add to PATH" when prompted in the install/setup window
-   1. After installing we will we will need to restart our machine
-   1. Confirm successful install by opening up a terminal and typing "**python --version**"
 * GitHub CLI: https://cli.github.com/
 * CumulusCI: https://cumulusci.readthedocs.io/en/stable/
 * sfdx plugins:
