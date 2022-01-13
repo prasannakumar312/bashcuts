@@ -14,7 +14,7 @@ To get started, add the below content and associated logic to the your .bashrc f
 	        	NEW_SUPPORT_TICKET_URL="https://myoganizations-supportdesk.supporting"
 		}
 
-		PATH_TO_BASHCUTS="/path/to/your/githubbachcuts/location"
+		PATH_TO_BASHCUTS="/path/to/your/githubbashcuts/location"
 		if [ -f $PATH_TO_BASHCUTS/bashcuts/.bcut_home ]; 
 		then 
 		    echo "bashrc loaded"
