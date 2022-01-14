@@ -6,11 +6,23 @@ dx-open() {
     time sfdx force:org:open
 }
 
+dx-open-devconsole() {
+    echo sfdx force:org:open --path "_ui/common/apex/debug/ApexCSIPage"
+    time sfdx force:org:open --path "_ui/common/apex/debug/ApexCSIPage"
+}
+
 dx-open-by-alias() {
     echo What is the username or alias of the org to open? \( --targetusername \| -u \)
     read TARGET_USERNAME
     echo sfdx force:org:open --targetusername $TARGET_USERNAME
     time sfdx force:org:open --targetusername $TARGET_USERNAME
+}
+
+dx-open-devconsole-by-alias() {
+    echo What is the username or alias of the org to open? \( --targetusername \| -u \)
+    read TARGET_USERNAME
+    echo sfdx force:org:open --path "_ui/common/apex/debug/ApexCSIPage"
+    time sfdx force:org:open --path "_ui/common/apex/debug/ApexCSIPage"
 }
 
 dx-open-local-user-sfdx() {
@@ -83,6 +95,16 @@ dx-install-package-noprompt() {
     read PACKAGE_VERSION_ID
     echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
     time sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
+}
+
+dx-install-package-web() {
+    echo What is the custom url of the install destination org?
+    read customUrl
+    echo What is the Subscriber Package Id?
+    read packageId
+    packageUrlSegments="/packaging/installPackage.apexp?p0="
+    echo "${customUrl}${packageUrlSegments}${packageId}"
+    start "${customUrl}${packageUrlSegments}${packageId}"
 }
 
 dx-install-package-production() {
@@ -191,8 +213,18 @@ dx-texei-install-dependencies() {
     read SCRATCH_ORG_ALIAS
     echo sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
     time sfdx texei:package:dependencies:install --targetusername $SCRATCH_ORG_ALIAS --targetdevhubusername $DEVHUB_ALIAS --noprompt -w 120
-
 }
+
+dx-texei-data-import() {
+    echo What is the alias/username of the org to import data into \(--targetusername, -u \)?
+    read TARGET_ORG
+    echo What is the directory where the data to import is located \(--inputdir, -d\)?
+    read -e DATA_PATH
+    echo sfdx texei:data:import --inputdir $DATA_PATH --targetusername $TARGET_ORG
+    time sfdx texei:data:import --inputdir $DATA_PATH --targetusername $TARGET_ORG
+}
+
+
 
 dxlogout() {
    sfdx auth:logout --targetusername $1
@@ -242,6 +274,18 @@ dx-create-scratch() {
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
     time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
+}
+
+dx-create-scratch-and-open() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
+    time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
+    dx-open
 }
 
 dx-create-scratch-and-push() {
@@ -353,18 +397,25 @@ dx-create-project() {
 }
 
 dx-create-package() {
-    echo What is the DevHub alias/username\(--targetdevhubusername\) for the ORG?
-    read targetdevhubusername
-    echo What is the package Name?\(--name\)?
-    read packageName
-    echo What is the package Type?\(--packagetype Managed\|Unlocked\)?
-    read packageType
-    echo What is the package path?\(--path\)?
-    read -e path
-    echo What is the package description?\(--description\)?
-    read description
-    echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
-    time sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    echo Do you have the latest codebase pulled down?
+    read hasLatest
+    if [[ $hasLatest =~ "yes" ]]
+    then
+        echo What is the DevHub alias/username\(--targetdevhubusername\) for the ORG?
+        read targetdevhubusername
+        echo What is the package Name?\(--name\)?
+        read packageName
+        echo What is the package Type?\(--packagetype Managed\|Unlocked\)?
+        read packageType
+        echo What is the package path?\(--path\)?
+        read -e path
+        echo What is the package description?\(--description\)?
+        read description
+        echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+        time sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    else 
+        echo "get latest from origin"
+    fi
 }
 
 dx-create-package-version-skipvalidation() {
@@ -381,7 +432,7 @@ dx-create-package-version-with-version-number() {
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    echo What is the specific magor.minor.patch.build version number to represent this package version?\( --versionnumber \| -n\)
+    echo What is the specific major.minor.patch.build version number to represent this package version?\( --versionnumber \| -n\)
     read versionNumber
     echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --wait 120 --codecoverage
     time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --wait 120 --codecoverage
@@ -401,10 +452,8 @@ dx-create-package-version-validate() {
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
-    echo What is the package version number? \(--versionnumber \| -n\)?
-    read versionNumber
-    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --codecoverage --wait 100 
-    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --versionnumber $versionNumber --installationkeybypass --codecoverage --wait 100 
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --codecoverage --wait 100 
 }
 
 
@@ -643,15 +692,12 @@ dx-auth-device() {
     read customUrl
     echo What is the alias\(--setalias\) for this custom url authorization?
     read alias
-    # echo sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
-    # sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
     echo sfdx auth:device:login -r "$customUrl" -a $alias
     sfdx auth:device:login -r "$customUrl" -a $alias
 
 }
 
 dx-auth-jwt() {
-    # sfdx auth:jwt:grant --clientid $SF_FEATURE_CLIENTID -f jwtkeyfile.key --username $SF_FEATURE_USERNAME --instanceurl $SF_FEATURE_ORG_URL -d -s
     echo What is the instance url\(--instanceurl\)?
     read instanceUrl 
     echo What is the client Id\(--clientid\)?
@@ -684,37 +730,55 @@ dx-test-method () {
     read ORG_ALIAS_OR_USERNAME
     echo "Enter test parameter.. in format: ClassName.MethodName"
     read TEST_PARAM
+    echo sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --targetusername $ORG_ALIAS_OR_USERNAME
     time sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --targetusername $ORG_ALIAS_OR_USERNAME
 }
 
 dx-test-method-codecoverage () {
-    time sfdx force:apex:test:run --resultformat human --loglevel error --tests $1 --codecoverage
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "Enter test parameter.. in format: ClassName.MethodName"
+    read TEST_PARAM
+    echo sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --codecoverage --resultformat human --targetusername $ORG_ALIAS_OR_USERNAME
+    time sfdx force:apex:test:run --resultformat human --loglevel error --tests $TEST_PARAM --codecoverage --resultformat human --targetusername $ORG_ALIAS_OR_USERNAME
 }
 
 dx-test-suite () {
-    time sfdx force:apex:test:run --resultformat human --loglevel error -s $1
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "What is the suitename to test? If there are multiple test suites, provide a comma separated list like 'TestSuiteOne,TestSuiteTwo' \( --suitenames, -s \)"
+    read SUITE_NAMES
+    echo sfdx force:apex:test:run --resultformat human --loglevel error --suitenames $SUITE_NAMES --targetusername $ORG_ALIAS_OR_USERNAME
+    time sfdx force:apex:test:run --resultformat human --loglevel error --suitenames $SUITE_NAMES --targetusername $ORG_ALIAS_OR_USERNAME
 }
 
 dx-test-suite-codecoverage () {
-    time sfdx force:apex:test:run --resultformat human --loglevel error -s $1 --codecoverage
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "What is the suitename to test? If there are multiple test suites, provide a comma separated list like 'TestSuiteOne,TestSuiteTwo' \( --suitenames, -s \)"
+    read SUITE_NAMES
+    echo sfdx force:apex:test:run --resultformat human --loglevel error --suitenames $SUITE_NAMES --targetusername $ORG_ALIAS_OR_USERNAME --codecoverage --resultformat human
+    time sfdx force:apex:test:run --resultformat human --loglevel error --suitenames $SUITE_NAMES --targetusername $ORG_ALIAS_OR_USERNAME --codecoverage --resultformat human
 }
 
 dx-test-classes () {
-    time sfdx force:apex:test:run --classnames \"$1\" --loglevel error 
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "What is the class name to test? If there are multiple test classes, provide a comma separated list like 'TestClassOne,TestClassTwo' \( --classnames, -n \)"
+    read CLASS_NAMES
+    echo sfdx force:apex:test:run --classnames \"$CLASS_NAMES\" --loglevel error --targetusername $ORG_ALIAS_OR_USERNAME 
+    time sfdx force:apex:test:run --classnames \"$CLASS_NAMES\" --loglevel error --targetusername $ORG_ALIAS_OR_USERNAME 
 }
 
 dx-test-classes-codecoverage () {
-    time sfdx force:apex:test:run --classnames \"$1\" --resultformat human --codecoverage --loglevel error 
+    echo "What alias/username do you want to run the test against? \( --targetusername, -u \)"
+    read ORG_ALIAS_OR_USERNAME
+    echo "What is the class name to test? If there are multiple test classes, provide a comma separated list like 'TestClassOne,TestClassTwo' \( --classnames, -n \)"
+    read CLASS_NAMES
+    echo sfdx force:apex:test:run --classnames \"$CLASS_NAMES\" --loglevel error --targetusername $ORG_ALIAS_OR_USERNAME --codecoverage --resultformat human
+    time sfdx force:apex:test:run --classnames \"$CLASS_NAMES\" --loglevel error --targetusername $ORG_ALIAS_OR_USERNAME --codecoverage --resultformat human
 }
 
-dx-test-path-json() {
-    echo What is the Org username or alias to run the tests against? \( -u, --targetusername \)
-    read TARGET_ALIAS
-    echo What is the directory path where the tests are located? \( -d, --directory \)
-    read -e DIRECTORY_PATH
-    echo sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
-    time sfdx force:apex:test:run -l RunLocalTests -d $DIRECTORY_PATH -u $TARGET_ALIAS --json
-}
 
 dx-test-all() {
     echo What alias/username for an authentication do you want to delete? \( --targetusername, -u \)

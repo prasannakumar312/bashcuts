@@ -9,8 +9,8 @@ alias gl-graph="git log --graph --full-history --all --color --decorate=short"
 alias gl="git log --graph --name-status --pretty=format:\"%h - %an, %ar : %s\"" 
 alias gl-one-line="git log --pretty=oneline --graph --name-status"
 
-alias gcl="git config --local -e" #open up local config file for editing
-alias gcg="git config --global -e"
+alias o-gcl="git config --local -e" #open up local config file for editing
+alias o-gcg="git config --global -e"
 
 
 alias g-stash-apply="git stash apply stash@{0}"
