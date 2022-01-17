@@ -33,6 +33,7 @@ To get started, add the below content and associated logic to the your .bashrc f
 * Powershell 7 (and higher) - Installation instructions by operating system: https://github.com/powershell/powershell#get-powershell
 * GitHub CLI: https://cli.github.com/
 * CumulusCI: https://cumulusci.readthedocs.io/en/stable/
+* jQ: https://stedolan.github.io/jq/
 * sfdx plugins:
   * sfdx scanner: https://forcedotcom.github.io/sfdx-scanner/
   * sfdx texei: https://github.com/texei/texei-sfdx-plugin
