@@ -397,25 +397,18 @@ dx-create-project() {
 }
 
 dx-create-package() {
-    echo Do you have the latest codebase pulled down?
-    read hasLatest
-    if [[ $hasLatest =~ "yes" ]]
-    then
-        echo What is the DevHub alias/username\(--targetdevhubusername\) for the ORG?
-        read targetdevhubusername
-        echo What is the package Name?\(--name\)?
-        read packageName
-        echo What is the package Type?\(--packagetype Managed\|Unlocked\)?
-        read packageType
-        echo What is the package path?\(--path\)?
-        read -e path
-        echo What is the package description?\(--description\)?
-        read description
-        echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
-        time sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
-    else 
-        echo "get latest from origin"
-    fi
+    echo What is the DevHub alias/username\(--targetdevhubusername\) for the ORG?
+    read targetdevhubusername
+    echo What is the package Name?\(--name\)?
+    read packageName
+    echo What is the package Type?\(--packagetype Managed\|Unlocked\)?
+    read packageType
+    echo What is the package path?\(--path\)?
+    read -e path
+    echo What is the package description?\(--description\)?
+    read description
+    echo sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
+    time sfdx force:package:create --targetdevhubusername=$targetdevhubusername --name $packageName --packagetype $packageType --path $path --description "$description" --nonamespace
 }
 
 dx-create-package-version-skipvalidation() {
