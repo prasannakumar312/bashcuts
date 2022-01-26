@@ -10,7 +10,7 @@ alias new-bash='start "" "C:\Program Files\Git\git-bash.exe"' #UNLINKED TO CURRE
 alias git-bash='/git-bash.exe & > /dev/null 2&>1'   
 
 # NEW POWERSHELL WINDOW FROM BASH TERMINAL
-alias pow="start powershell"
+alias pow="start pwsh"
 
 #RE-INITIALIZE CURRENTLY OPEN TERMINAL
 alias reinit="source ~/.bashrc"

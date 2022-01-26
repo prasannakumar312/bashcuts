@@ -276,6 +276,17 @@ dx-create-scratch() {
     time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --loglevel trace
 }
 
+dx-create-scratch-non-default() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --loglevel trace
+    time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --loglevel trace
+}
+
 dx-create-scratch-and-open() {
     echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
     read devHub

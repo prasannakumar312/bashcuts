@@ -2,17 +2,6 @@
 #GITHUB CLI ALIASES
 alias ghview="gh repo view --web"
 
-gh-create-repo-from-dx-template() {
-    echo What is the Project Name \(will be name of repository\)?
-    read PROJECT_NAME
-    echo What is the name of the org this project is planned to be installed to? \( VAVET -or- VALOB -or- VAEMPL \)
-    read ORG_NAME
-    echo What is the description of this project?
-    read DESCRIPTION
-    echo gh repo create department-of-veterans-affairs/$ORG_NAME-$PROJECT_NAME --description \"$DESCRIPTION\" --template department-of-veterans-affairs/dtc-release-dx-repository-template --internal --confirm  
-    gh repo create department-of-veterans-affairs/$ORG_NAME-$PROJECT_NAME --description "$DESCRIPTION" --template department-of-veterans-affairs/dtc-release-dx-repository-template --internal --confirm  
-}
-
 gh-docs() {
     start https://cli.github.com/manual/index
 }
