@@ -144,6 +144,16 @@ g-delete-remoteandlocal-by-branch() {
 
 }
 
+
+g-delete-local-by-branch() {
+    echo "What is the branch name?"
+    read branchName
+    echo "deleting branch locally"
+    echo "git branch -D '$branchName'"
+    git branch -D "$branchName"
+
+}
+
 g-action-init() {
     # replace $1 with a unique feature branch identifier
     git checkout -b "feature-$1";

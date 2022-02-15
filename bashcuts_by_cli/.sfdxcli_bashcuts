@@ -358,7 +358,70 @@ dx-create-scratch-dependencies-install-package() {
         echo sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120
         dependencies_command_result=$(sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120)
         echo $dependencies_command_result
+    else 
+        echo "The scratch org creation failed"
+    fi
 
+}
+
+dx-create-scratch-dependencies-install-package-and-push() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    echo $command_result
+    if [[ $command_result =~ "Successfully" ]]
+    then
+        echo "INSTALLING  DEPENDENCIES FROM sfdx-project.json TO $alias"
+        echo sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120
+        dependencies_command_result=$(sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120)
+        echo $dependencies_command_result
+
+        if [[ $command_result =~ "Successfully" ]]
+        then
+            dx-push
+        else    
+            echo "the dependencies install failed"
+        fi
+    else 
+        echo "The scratch org creation failed"
+    fi
+
+}
+
+dx-create-scratch-dependencies-install-package-and-create-package-version-and-install() {
+    echo What DevHub will this Scratch Org be created from\(--targetdevhubusername \|-v\)?
+    read devHub
+    echo How many days\(--durationdays\) will this scratch org Exist \(1-30\)?
+    read durationDays
+    echo What will the scratch org\'s alias\(--setalias\) be?
+    read alias
+    echo What is the package name\'s alias\(--package\) be?
+    read packageNameAlias
+    echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    echo $command_result
+    if [[ $command_result =~ "Successfully" ]]
+    then
+        echo "INSTALLING  DEPENDENCIES FROM sfdx-project.json TO $alias"
+        echo sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120
+        dependencies_command_result=$(sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120)
+        echo $dependencies_command_result
+
+        if [[ $command_result =~ "Successfully" ]]
+        then
+            echo sfdx force:package:version:create --targetdevhubusername $devHub --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
+            time sfdx force:package:version:create --targetdevhubusername $devHub --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
+            dependencies_command_result=$(sfdx texei:package:dependencies:install --targetusername $alias --targetdevhubusername $devHub --noprompt -w 120)
+            echo sfdx force:package:install --targetusername $alias --package $PACKAGE_VERSION_ID --noprompt --wait 10
+            time sfdx force:package:install --targetusername $alias --package $PACKAGE_VERSION_ID --noprompt --wait 10
+        else    
+            echo "the dependencies install failed"
+        fi
     else 
         echo "The scratch org creation failed"
     fi
@@ -423,12 +486,34 @@ dx-create-package() {
 }
 
 dx-create-package-version-skipvalidation() {
-    echo What is the alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    echo What is the DevHub alias/username\(--targetdevhubusername \| -v\) for the ORG?
     read targetdevhubusername
     echo What is the package alias being versioned?\(--package \| -p\)?
     read packageNameAlias
     echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
     time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --installationkeybypass --skipvalidation --wait 120
+}
+
+dx-create-package-version-with-path-skipvalidation() {
+    echo What is the DevHub alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    read targetdevhubusername
+    echo What is the package alias being versioned?\(--package \| -p\)?
+    read packageNameAlias
+    echo What is the path of the package being versioned? \(--path \| -d\)?
+    read -e path
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --path $path --installationkeybypass --skipvalidation --wait 120
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --path $path --installationkeybypass --skipvalidation --wait 120
+}
+
+dx-create-package-version-with-path-full-validation() {
+    echo What is the DevHub alias/username\(--targetdevhubusername \| -v\) for the ORG?
+    read targetdevhubusername
+    echo What is the package alias being versioned?\(--package \| -p\)?
+    read packageNameAlias
+    echo What is the path of the package being versioned? \(--path \| -d\)?
+    read -e path
+    echo sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --path "$path" --installationkeybypass --wait 120 --codecoverage
+    time sfdx force:package:version:create --targetdevhubusername $targetdevhubusername --package $packageNameAlias --path "$path" --installationkeybypass --wait 120 --codecoverage
 }
 
 dx-create-package-version-with-version-number() {
