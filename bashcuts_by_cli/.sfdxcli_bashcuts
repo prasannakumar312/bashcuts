@@ -307,7 +307,7 @@ dx-create-scratch-and-push() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -328,7 +328,7 @@ dx-create-scratch-install-and-push() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -350,7 +350,7 @@ dx-create-scratch-dependencies-install-package() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -372,7 +372,7 @@ dx-create-scratch-dependencies-install-package-and-push() {
     echo What will the scratch org\'s alias\(--setalias\) be?
     read alias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
@@ -403,7 +403,7 @@ dx-create-scratch-dependencies-install-package-and-create-package-version-and-in
     echo What is the package name\'s alias\(--package\) be?
     read packageNameAlias
     echo sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR
-    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays 1 --setdefaultusername --wait 5 --loglevel ERROR)
+    command_result=$(time sfdx force:org:create --targetdevhubusername $devHub --definitionfile config/project-scratch-def.json --setalias $alias --durationdays $durationDays --setdefaultusername --wait 5 --loglevel ERROR)
     echo $command_result
     if [[ $command_result =~ "Successfully" ]]
     then
