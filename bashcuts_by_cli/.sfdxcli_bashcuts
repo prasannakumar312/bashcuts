@@ -51,8 +51,8 @@ dx-show-orgs() {
 
 
 
-alias dxdevhubpackagelist="time sfdx force:package:list"
-alias dxlocalpackagelist="time sfdx force:package:installed:list"
+alias dx-show-devhub-packagelist="time sfdx force:package:list"
+alias dx-show-local-packagelist="time sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
 alias dxcleanscratch="time sfdx force:org:list --clean"
 
@@ -165,8 +165,8 @@ dx-show-package-versions-for-specific-package() {
     read devhub
     echo What is the package alias\/id? \( --packages, p \)
     read PACKAGE_ALIAS
-    echo sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
-    time sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS
+    echo sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS --json
+    time sfdx force:package:version:list --targetdevhubusername $devhub --packages $PACKAGE_ALIAS --json
 }
 
 dx-show-package-version-component-viewer() {
@@ -256,13 +256,27 @@ dx-show-config() {
     sfdx config:list
 }
 
-dx-data-load() {
-  echo What path/plan \(p \| --plan \)?
-  read path
+dx-data-bulk-upsert() {
+  echo List the path to the csv file: \(-f \| --csvfile \)
+  read -e csvFile
+  echo What is the SObjectType? \(-s \| --sobjecttype\)
+  read sobjectType
   echo What alias/username \(--targetusername \| -u \) will this data be uploaded to?
   read alias
-  echo sfdx force:data:tree:import -plan $path --targetusername $alias
-  time sfdx force:data:tree:import --plan $path --targetusername $alias
+  echo What is the external Id? \( -i \| --externalid \)
+  read externalId
+  echo sfdx force:data:bulk:upsert --sobjecttype $sobjectType --csvfile \"$csvFile\" --externalid $externalId --targetusername $alias --wait 10
+  time sfdx force:data:bulk:upsert --sobjecttype $sobjectType --csvfile "$csvFile" --externalid $externalId --targetusername $alias --wait 10
+
+}
+
+dx-data-tree-import() {
+  echo What path/plan \(-p \| --plan \)?
+  read -e path
+  echo What alias/username \(--targetusername \| -u \) will this data be uploaded to?
+  read alias
+  echo sfdx force:data:tree:import -plan \"$path\" --targetusername $alias
+  time sfdx force:data:tree:import --plan "$path" --targetusername $alias
 }
 
 dx-create-scratch() {
@@ -609,8 +623,8 @@ dx-deploy-path() {
     read TARGET_USERNAME
     echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
     read -e SOURCEPATH
-    echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
-    time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH
+    echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath \"$SOURCEPATH\"
+    time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath "$SOURCEPATH"
 }
 
 dx-validate-deploy-path() {
