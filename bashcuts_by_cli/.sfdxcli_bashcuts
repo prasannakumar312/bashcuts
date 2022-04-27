@@ -54,7 +54,11 @@ dx-show-orgs() {
 alias dx-show-devhub-packagelist="time sfdx force:package:list"
 alias dx-show-local-packagelist="time sfdx force:package:installed:list"
 alias dx-show-plugins="sfdx plugins --core"
-alias dxcleanscratch="time sfdx force:org:list --clean"
+
+dx-clean-inactive-scratch-orgs() {
+    echo sfdx force:org:list --clean
+    time sfdx force:org:list --clean
+}
 
 dx-docs() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
@@ -66,6 +70,10 @@ dx-docs-force() {
 
 dx-docs-force-apex() {
     start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_apex.htm#cli_reference_force_apex
+}
+
+dx-docs-force-mdapi() {
+    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_mdapi.htm#cli_reference_force_mdapi
 }
 
 dx-docs-config() {
@@ -95,6 +103,15 @@ dx-install-package-noprompt() {
     read PACKAGE_VERSION_ID
     echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
     time sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --noprompt --wait 10
+}
+
+dx-install-package-noprompt-delete() {
+    echo What is the alias/username of the org deploying to \(--targetusername, -u\)?
+    read TARGET_ALIAS
+    echo What is the Subscriber Package Version Id \( --package, -p \)?
+    read PACKAGE_VERSION_ID
+    echo sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --upgradetype Delete --noprompt --wait 10
+    time sfdx force:package:install --targetusername $TARGET_ALIAS --package $PACKAGE_VERSION_ID --upgradetype Delete --noprompt --wait 10
 }
 
 dx-install-package-web() {
@@ -627,13 +644,24 @@ dx-deploy-path() {
     time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath "$SOURCEPATH"
 }
 
-dx-validate-deploy-path() {
+dx-validate-only-source-by-environment() {
     echo What is the ORG username or alias to deploy to? \( --targetusername, -u \)
     read TARGET_USERNAME
     echo What path contains the source metadata to deploy? \(--sourcepath, -p \)
     read -e SOURCEPATH
     echo sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
     time sfdx force:source:deploy --targetusername $TARGET_USERNAME --sourcepath $SOURCEPATH --checkonly
+}
+
+dx-validate-only-mdapi-by-environment() {
+	echo What is the target alias/username to validate \(--checkonly\) the mdapi conversion against? \(--targetusername \| -u\)
+	read targetusername
+	echo What is the path of the package to convert? \(--rootdir \| -r\)?
+	read -e path
+	echo sfdx force:source:convert --rootdir \"$path\" --outputdir \"do-not-commit-for-testing-only\"
+	sfdx force:source:convert --rootdir "$path" --outputdir "do-not-commit-for-testing-only"
+	echo sfdx force:mdapi:deploy --deploydir \"do-not-commit-for-testing-only\" --checkonly --wait 100
+	sfdx force:mdapi:deploy --deploydir "do-not-commit-for-testing-only" --checkonly --wait 100
 }
 
 dx-pull() {
@@ -781,7 +809,16 @@ lwc-debug() {
     time sfdx force:data:record:update --sobjecttype=User --where="Username="$1"" --values="UserPreferencesUserDebugModePref=$2"
 }
 
-dx-auth-custom() {
+dx-auth-web() {
+    echo What is the custom url\(--instanceurl\)?
+    read customUrl
+    echo What is the alias\(--setalias\) for this custom url authorization?
+    read alias
+    echo sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
+    sfdx auth:web:login --setalias $alias --instanceurl "$customUrl"
+}
+
+dx-auth-web-setdefault() {
     echo What is the custom url\(--instanceurl\)?
     read customUrl
     echo What is the alias\(--setalias\) for this custom url authorization?
