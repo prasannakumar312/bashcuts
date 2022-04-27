@@ -17,6 +17,10 @@ az-query-all-pie-by-phrase() {
 # ?worked
 # $ az boards query --output table --wiql "select [id],[Work Item Type],[Title] from workitems where [system.teamproject] = 'DTC Release'"
 
+az-set-default-org-by-bashrc() {
+    echo az devops configure --defaults organization=$AZ_DEFAULT_ORG
+    az devops configure --defaults organization="$AZ_DEFAULT_ORG"
+}
 
 az-set-default-organization() {
     echo What url represents the organization to default?
