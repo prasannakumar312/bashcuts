@@ -107,7 +107,7 @@ function dx-create-scratch-org-orgwideemail-replace-with-current-user-and-push {
 function dx-replace-user-info-instances-with-active-scratch-org-users {
     param($alias)
 
-    $sfdx_source_path = "$((Get-Location).path))/sfdx-source"
+    $sfdx_source_path = "$((Get-Location).path)/sfdx-source"
     Write-Host $sfdx_source_path
     update_workflow_files -path_to_workflows_directory $sfdx_source_path -scratch_org_alias $alias
 }
