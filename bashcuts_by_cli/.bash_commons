@@ -6,11 +6,11 @@ export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 alias hg="history|grep "
 
 # NEW TERMINAL FROM TERMINAL
-alias new-bash='start "" "C:\Program Files\Git\git-bash.exe"' #UNLINKED TO CURRENT TERMINAL PROCESS
+alias new-bash='open "" "C:\Program Files\Git\git-bash.exe"' #UNLINKED TO CURRENT TERMINAL PROCESS
 alias git-bash='/git-bash.exe & > /dev/null 2&>1'   
 
 # NEW POWERSHELL WINDOW FROM BASH TERMINAL
-alias pow="start pwsh"
+alias pow="open pwsh"
 
 #RE-INITIALIZE CURRENTLY OPEN TERMINAL
 alias reinit="source ~/.bashrc"
@@ -35,7 +35,7 @@ alias back="cd -"
 alias copy="clip.exe"
 
 open-url() {
-   start $1
+   open $1
 }
 
 open-profile() {

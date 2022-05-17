@@ -150,13 +150,13 @@ az-quick-open() {
 }
 
 az-open-board() {
-    start $AZ_BOARD_VIEW
+    open $AZ_BOARD_VIEW
 }
 
 az-open-hierarchy() {
-    start $AZ_HIERARCHY_VIEW
+    open $AZ_HIERARCHY_VIEW
 }
 
 az-open-current-sprint-stories-view() {
-    start $AZ_CURRENT_SPRINT_STORIES_VIEW
+    open $AZ_CURRENT_SPRINT_STORIES_VIEW
 }

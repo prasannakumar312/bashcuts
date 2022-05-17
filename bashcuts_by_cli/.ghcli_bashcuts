@@ -3,5 +3,5 @@
 alias ghview="gh repo view --web"
 
 gh-docs() {
-    start https://cli.github.com/manual/index
+    open https://cli.github.com/manual/index
 }

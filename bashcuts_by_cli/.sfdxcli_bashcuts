@@ -26,12 +26,12 @@ dx-open-devconsole-by-alias() {
 }
 
 dx-open-local-user-sfdx() {
-    echo start ~/.sfdx
-    start ~/.sfdx
+    echo open ~/.sfdx
+    open ~/.sfdx
 }
 
 dx-open-local-appdata-sfdx() {
-   start ~/AppData/Local/sfdx
+   open ~/AppData/Local/sfdx
 }
 
 dx-open-local-sfdx-log () {
@@ -61,27 +61,27 @@ dx-clean-inactive-scratch-orgs() {
 }
 
 dx-docs() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm
 }
 
 dx-docs-force() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force.htm
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force.htm
 }
 
 dx-docs-force-apex() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_apex.htm#cli_reference_force_apex
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_apex.htm#cli_reference_force_apex
 }
 
 dx-docs-force-mdapi() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_mdapi.htm#cli_reference_force_mdapi
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_mdapi.htm#cli_reference_force_mdapi
 }
 
 dx-docs-config() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_config.htm
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_config.htm
 }
 
 dx-docs-scratch-org-features() {
-    start https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm
+    open https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm
 }
 
 dx-open-default() {
@@ -121,7 +121,7 @@ dx-install-package-web() {
     read packageId
     packageUrlSegments="/packaging/installPackage.apexp?p0="
     echo "${customUrl}${packageUrlSegments}${packageId}"
-    start "${customUrl}${packageUrlSegments}${packageId}"
+    open "${customUrl}${packageUrlSegments}${packageId}"
 }
 
 dx-install-package-production() {
@@ -192,7 +192,7 @@ dx-show-package-version-component-viewer() {
     echo What is the package version to review? 
     read PACKAGE_VERSION_ID
     webpage="https://${DEVHUB}.lightning.force.com/packagingSetupUI/ipLanding.app?apvId=${PACKAGE_VERSION_ID}"
-    echo start $webpage
+    echo open $webpage
     start $webpage
 }
 
@@ -1045,7 +1045,7 @@ dx-query-csv() {
     fileName="$queryResultsDirectory"/"$dateAndTime".csv
     results=$(time sfdx force:data:soql:query -q "$query" -r csv -u $alias) 
     echo "$results" > "$fileName"
-    start $fileName
+    open $fileName
 }
 
 dx-query-json() {
